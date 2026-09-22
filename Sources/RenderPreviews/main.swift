@@ -1,7 +1,7 @@
 #if os(macOS)
 import SwiftUI
 import AppKit
-import StructuredDesignSystem
+import AuraDesignSystem
 
 struct DeviceFrameContainer<Content: View>: View {
     let colorScheme: ColorScheme

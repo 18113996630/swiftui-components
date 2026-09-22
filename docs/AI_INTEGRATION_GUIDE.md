@@ -1,7 +1,7 @@
 # AI 接入与协同规范指南 (AI Integration & Implementation Guide)
 
 本文档专为 **AI 编程助手**（如 Antigravity、Claude Code、Cursor、Windsurf、GitHub Copilot 等）以及负责指导 AI 的 iOS 研发人员设计。
-当你在一个新项目或现有业务工程中接入并使用 `StructuredDesignSystem`（`swiftui-components`）时，**必须严格遵循本文档所定义的流程与设计系统红线**。
+当你在一个新项目或现有业务工程中接入并使用 `AuraDesignSystem`（`swiftui-components`）时，**必须严格遵循本文档所定义的流程与设计系统红线**。
 
 ---
 
@@ -43,7 +43,7 @@ let package = Package(
         .target(
             name: "MyConsumerApp",
             dependencies: [
-                .product(name: "StructuredDesignSystem", package: "swiftui-components")
+                .product(name: "AuraDesignSystem", package: "swiftui-components")
             ]
         )
     ]
@@ -54,7 +54,7 @@ let package = Package(
 1. 打开宿主 Xcode 工程，选择菜单 **File > Add Package Dependencies...**；
 2. 输入仓库 Git 链接：`https://github.com/18113996630/swiftui-components.git`；
 3. Dependency Rule 选择 **Branch: main**（或指定最新 Tag/Commit）；
-4. 在 **Add to Target** 勾选你的业务 Target，库产品选择 `StructuredDesignSystem`。
+4. 在 **Add to Target** 勾选你的业务 Target，库产品选择 `AuraDesignSystem`。
 
 #### 方式 C：本地 Monorepo / 本地开发引用
 若组件库在本地同级目录下开发调试：
@@ -71,12 +71,12 @@ let package = Package(
 ### 📋 可直接复制的 AI 提示词模板 (System Prompt / Agent Rules)
 
 ```markdown
-# 业务工程 UI 开发规范：StructuredDesignSystem 接入法则
+# 业务工程 UI 开发规范：AuraDesignSystem 接入法则
 
-你正在使用 `StructuredDesignSystem` 组件库为本应用构建高质感、原生细腻的 SwiftUI 界面。你必须严格遵守以下设计系统与工程约束：
+你正在使用 `AuraDesignSystem` 组件库为本应用构建高质感、原生细腻的 SwiftUI 界面。你必须严格遵守以下设计系统与工程约束：
 
 ## 1. 核心铁律（红线原则）
-- 【严禁自造轮子】：页面、卡片、设置行、输入框、按钮、分段选择器、徽标、弹窗等元素必须优先使用 `StructuredDesignSystem` 已提供的标准组件，严禁手写粗糙的原生平替。
+- 【严禁自造轮子】：页面、卡片、设置行、输入框、按钮、分段选择器、徽标、弹窗等元素必须优先使用 `AuraDesignSystem` 已提供的标准组件，严禁手写粗糙的原生平替。
 - 【排版与对比度】：核心标题一律用 `DesignSystem.Color.textPrimary`；次级文字一律用 `DesignSystem.Color.textSecondary`，严禁二次叠加 `.opacity(...)` 发灰发虚。
 - 【连续超椭圆】：所有圆角统一使用 `DesignSystem.CornerRadius` 并附带 `.continuous` 连续曲率样式。
 - 【多巴胺活力换肤】：颜色需支持 `@Environment(\.themePalette)`，页面不要硬编码不可换肤的纯色。
@@ -88,8 +88,8 @@ let package = Package(
 
 ## 2. 页面搭建三层骨架
 任何标准内容或表单页面必须按照此层级构建：
-StructuredScaffold (全屏外框，自动提供 16pt 外边距与 24pt 段落流)
-  └── StructuredSection (段落标头，集成 SF 图标与状态徽标)
+AuraScaffold (全屏外框，自动提供 16pt 外边距与 24pt 段落流)
+  └── AuraSection (段落标头，集成 SF 图标与状态徽标)
         └── BaseCard (纯白浮岛高质感卡片容器)
               └── 行组件 (SettingsRow / ChecklistRow / TimelineTaskRow / ClearableTextFieldRow 等)
 ```
@@ -102,7 +102,7 @@ StructuredScaffold (全屏外框，自动提供 16pt 外边距与 24pt 段落流
 
 ```swift
 import SwiftUI
-import StructuredDesignSystem
+import AuraDesignSystem
 
 @main
 struct ConsumerApp: App {
@@ -133,8 +133,8 @@ AI 在实现功能前，必须先查阅此表，匹配对应官方组件：
 
 | 类别 | 官方组件名 | 核心职责与场景 | 最小调用示例 |
 |---|---|---|---|
-| **页面基座** | `StructuredScaffold` | 页面级滚动骨架，自动配平 16pt 外边距与 24pt 段落节奏 | `StructuredScaffold { ... }` |
-| **段落分组** | `StructuredSection` | HIG 规范段落，自带 SF 图标基座与状态徽标 | `StructuredSection("基本设置", icon: "gearshape") { ... }` |
+| **页面基座** | `AuraScaffold` | 页面级滚动骨架，自动配平 16pt 外边距与 24pt 段落节奏 | `AuraScaffold { ... }` |
+| **段落分组** | `AuraSection` | HIG 规范段落，自带 SF 图标基座与状态徽标 | `AuraSection("基本设置", icon: "gearshape") { ... }` |
 | **段落标头** | `HIGSectionHeaderView` | 单独使用的分组头部视图 | `HIGSectionHeaderView("高级选项", icon: "slider.horizontal.3")` |
 | **浮岛容器** | `BaseCard` | 纯白卡片仓（20pt/28pt 连续曲率超椭圆，微漫反射阴影） | `BaseCard { ... }` |
 | **设置与导航** | `SettingsRow` | 设置项、导航项、开关行，带彩色图标底座与 badge | `SettingsRow(icon: "bell.fill", iconColor: .orange, title: "通知", subtitle: "开启声音提醒")` |
@@ -167,7 +167,7 @@ AI 在实现功能前，必须先查阅此表，匹配对应官方组件：
 
 ```swift
 import SwiftUI
-import StructuredDesignSystem
+import AuraDesignSystem
 
 struct ProfileSettingsView: View {
     @State private var username = "Alex"
@@ -176,7 +176,7 @@ struct ProfileSettingsView: View {
     @State private var selectedTheme: ThemePalette = .indigo
 
     var body: some View {
-        StructuredScaffold {
+        AuraScaffold {
             // 1. 分段选择控制
             PillSegmentedPicker(
                 selection: $experienceLevel,
@@ -185,7 +185,7 @@ struct ProfileSettingsView: View {
             )
 
             // 2. 核心段落：个人信息
-            StructuredSection("基本信息", icon: "person.crop.circle.fill", badgeText: "必填") {
+            AuraSection("基本信息", icon: "person.crop.circle.fill", badgeText: "必填") {
                 BaseCard {
                     ClearableTextFieldRow(
                         title: "用户昵称",
@@ -205,7 +205,7 @@ struct ProfileSettingsView: View {
             }
 
             // 3. 次级段落：通知与系统
-            StructuredSection("系统与偏好", icon: "gearshape.2.fill") {
+            AuraSection("系统与偏好", icon: "gearshape.2.fill") {
                 BaseCard {
                     SettingsRow(
                         icon: "bell.badge.fill",
@@ -250,7 +250,7 @@ struct ProfileSettingsView: View {
 
 ```swift
 // ✅ 正确：直接传递字面量，自动入库 xcstrings
-StructuredSection("Account Settings", icon: "person.fill") {
+AuraSection("Account Settings", icon: "person.fill") {
     SettingsRow(
         icon: "lock.fill",
         iconColor: .blue,
@@ -269,7 +269,7 @@ let dynamicUserName: String = apiUser.nickname
 let dynamicEmail: String = apiUser.email
 
 // ✅ 正确：使用 verbatim 避免编译错误，且不污染 String Catalog
-StructuredSection(verbatim: dynamicUserName, icon: "person.text.rectangle") {
+AuraSection(verbatim: dynamicUserName, icon: "person.text.rectangle") {
     SettingsRow(
         verbatim: dynamicUserName,
         subtitle: dynamicEmail
@@ -290,7 +290,7 @@ StructuredSection(verbatim: dynamicUserName, icon: "person.text.rectangle") {
 |---|---|---|---|
 | **自造圆角卡片** | `VStack { ... }.background(Color.white).cornerRadius(10)` | `BaseCard { ... }` | 破坏 20pt 超椭圆（`.continuous`）与全局漫反射阴影规范。 |
 | **次级文字发灰** | `Text("副标题").foregroundColor(.gray).opacity(0.6)` | `Text("副标题").foregroundColor(DesignSystem.Color.textSecondary)` | 二次叠加透明度会导致对比度严重低于 WCAG 4.5:1，造成视觉疲劳。 |
-| **生硬原生滚动** | `ScrollView { VStack(spacing: 20) { ... } }` | `StructuredScaffold { ... }` | 丢失 16pt 外边距与 24pt 段落流节奏控制。 |
+| **生硬原生滚动** | `ScrollView { VStack(spacing: 20) { ... } }` | `AuraScaffold { ... }` | 丢失 16pt 外边距与 24pt 段落流节奏控制。 |
 | **硬编码主题色** | `.foregroundColor(.blue)` 或 `.tint(.blue)` | `@Environment(\.themePalette) var theme` 并使用 `theme.primary` | 无法穿透动态 9 色多巴胺换肤系统。 |
 | **按键缺失触感** | 普通 `Button(...) { ... }` | `Button(...) { ... }.buttonStyle(ScaleButtonStyle())` | 缺少 0.97 弹性微缩手感与物理反馈。 |
 | **动态变量错传** | `SettingsRow(title: user.dynamicName)`（若定义为 LocalizedStringKey 会报编译错误） | `SettingsRow(verbatim: user.dynamicName)` | `String` 变量无法隐式转换为 `LocalizedStringKey`，必须走 `verbatim:` 通道。 |
@@ -305,7 +305,7 @@ StructuredSection(verbatim: dynamicUserName, icon: "person.text.rectangle") {
 - [ ] **编译验证**：在终端运行 `swift build` 或在 Xcode 执行编译，确保处于 **0 错误、0 警告** 状态。
 - [ ] **String Catalog 验证**：若宿主工程有 `Localizable.xcstrings`，检查新增的静态文案是否已被 Xcode 正确索引，且没有误录入动态数据。
 - [ ] **设计红线核验**：
-  - 页面结构是否使用 `StructuredScaffold` + `StructuredSection` + `BaseCard`？
+  - 页面结构是否使用 `AuraScaffold` + `AuraSection` + `BaseCard`？
   - 是否有遗漏的 `Color.gray.opacity(...)` 或原生 `.cornerRadius(...)`？
   - 所有按钮是否应用了 `ScaleButtonStyle`？
 - [ ] **换肤测试**：切换 `.themePalette(.coral)` 或 `.themePalette(.emerald)`，确认整个页面的高光色与徽标均能平滑联动。

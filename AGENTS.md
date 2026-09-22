@@ -1,6 +1,6 @@
 # AGENTS.md
 
-本文档用于规范所有 AI 助手（Agents）以及开发人员在本仓库（`swiftui-components` / `StructuredDesignSystem`）中的开发、重构与文档维护行为准则。
+本文档用于规范所有 AI 助手（Agents）以及开发人员在本仓库（`swiftui-components` / `AuraDesignSystem`）中的开发、重构与文档维护行为准则。
 
 ---
 
@@ -18,7 +18,7 @@
 - [ ] **源码 DocComments 注入**：新增组件必须配备结构化 `///` 注释，包含一句话职责定位、`⚠️ 设计系统红线（Design Guardrails）` 与包含标准调用方式的 `/// ```swift` 代码示例。
 - [ ] **目录树同步**：在 `README.md` 的「目录结构」树状图中，在对应的分级目录（如 `Components/`、`Previews/`）下补全新增的 Swift 文件路径，并附带一句话核心定位与功能职责说明。
 - [ ] **规范与索引**：若新增了关键级组件（如核心容器、交互选择器），在 `README.md` 的组件列表或特性清单中补充其使用场景与核心特性。
-- [ ] **展厅接入**：将新组件接入 [`DesignSystemGalleryView.swift`](Sources/StructuredDesignSystem/Previews/DesignSystemGalleryView.swift) 或配套的专项 Specimen 视图中，确保有直观的交互预览。
+- [ ] **展厅接入**：将新组件接入 [`DesignSystemGalleryView.swift`](Sources/AuraDesignSystem/Previews/DesignSystemGalleryView.swift) 或配套的专项 Specimen 视图中，确保有直观的交互预览。
 
 ### 2. 修改组件（Modify Component）
 - [ ] **源码 DocComments 修正**：同步更新类型与初始化器上方的 `///` 注释，确保参数描述、`⚠️ 设计系统红线` 与 `/// ```swift` 代码示例与最新代码完全一致。

@@ -2,22 +2,22 @@
 import PackageDescription
 
 let package = Package(
-    name: "StructuredDesignSystem",
+    name: "AuraDesignSystem",
     platforms: [
         .iOS(.v18),
         .macOS(.v14)
     ],
     products: [
         .library(
-            name: "StructuredDesignSystem",
-            targets: ["StructuredDesignSystem"]
+            name: "AuraDesignSystem",
+            targets: ["AuraDesignSystem"]
         )
     ],
     targets: [
-        .target(name: "StructuredDesignSystem"),
+        .target(name: "AuraDesignSystem"),
         .executableTarget(
             name: "RenderPreviews",
-            dependencies: ["StructuredDesignSystem"]
+            dependencies: ["AuraDesignSystem"]
         )
     ]
 )

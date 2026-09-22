@@ -1,13 +1,13 @@
-# swiftui-components
+# swiftui-components (AuraDesignSystem)
 
-一个面向 iOS 18+ 的 SwiftUI 结构化设计系统（StructuredDesignSystem），以 ADA 获奖级视觉基调为准则，提供统一的设计令牌、原子微标、交互选择器、流式排版与浮岛卡片容器，便于多个独立应用保持高度视觉一致性与细腻交互手感。
+一个面向 iOS 18+ 的 SwiftUI 微光设计系统（AuraDesignSystem），以 ADA 获奖级视觉基调为准则，提供统一的设计令牌、原子微标、交互选择器、流式排版与浮岛卡片容器，便于多个独立应用保持高度视觉一致性与细腻交互手感。
 
 ## 设计系统核心规范 (Design DNA)
 
 1. **全域 SF Pro Rounded 排版与 WCAG 4.5:1 对比度基准**：温暖、圆润且高辨识度，涵盖 `largeTitle` (28pt)、`title` (20pt)、`headline` (17pt Semibold 骨架)、`body` (16pt Regular)、`subheadline` (14pt Medium)、`caption` 与 `time` (13pt Semibold)，严禁二次透明度稀释，告别发灰发虚。
 2. **连续曲率超椭圆 (Continuous Curvature)**：全系采用 `.continuous`，梯度覆盖 8pt (微标) / 14pt (按钮) / 20pt (卡片) / 28pt (浮岛主画布)。
 3. **9 色多巴胺活力主题色盘**：`ThemePalette` 贯穿，通过 `@Environment(\.themePalette)` 全局穿透与即时换肤。
-4. **漫反射环境光阴影与细微边缘**：统一 `24pt / 32pt` 柔和扩散阴影与 `0.5pt hairlineBorder` 边缘高光。
+4. **漫反射环境光阴影与细微边缘**：统一 `24pt / 32pt` 柔和扩散阴影（Aura Ambient Shadow）与 `0.5pt hairlineBorder` 边缘高光。
 5. **物理弹性缩放与细腻触觉**：统一 `ScaleButtonStyle` (0.97 按压缩放) 与集中式 `HapticManager` 机械震动反馈。
 6. **全域国际化与零内置文案 (Zero Built-in Copy & String Catalog 自动抓取)**：组件库内所有展示文本组件全面支持 `LocalizedStringKey`，由 Xcode 15+ 编译期 AST 全自动提取至 `.xcstrings`；并提供 `verbatim:` 动态直出通道。组件内部坚持 100% 零内置文案，状态优先采用纯图标与微动效表达，实现完全通用的组件库架构。
 
@@ -17,14 +17,14 @@
 docs/
 └── AI_INTEGRATION_GUIDE.md        # AI 助手在外部业务工程接入本组件库的完整工作流与防翻车指南
 
-Sources/StructuredDesignSystem/
+Sources/AuraDesignSystem/
 ├── DesignSystem.swift              # 主题调色盘、颜色、字体、间距、圆角、漫反射阴影令牌
 ├── Localization/
 │   └── LocalizedText.swift         # 统一国际化双通道文本底座 (LocalizedStringKey 抓取 & verbatim 直出)
 ├── Theme/
 │   └── ThemeEnvironment.swift      # @Environment(\.themePalette) 全局动态主题穿透
 ├── Extensions/
-│   └── View+DesignSystem.swift     # .structuredCard() / .fadeEdge() / .ambientShadow() / .hairlineBorder()
+│   └── View+DesignSystem.swift     # .auraCard() / .fadeEdge() / .ambientShadow() / .hairlineBorder()
 ├── Styles/
 │   ├── ScaleButtonStyle.swift     # 弹性物理微缩触感样式 (.scale)
 │   └── HapticManager.swift         # 集中式触觉震动管理器 (Impact / Notification / Selection)
@@ -49,8 +49,8 @@ Sources/StructuredDesignSystem/
 │   ├── KeyboardAccessoryBar.swift  # 键盘快捷辅助工具栏 (通用计数与收起键盘)
 │   ├── ToastHUD.swift              # 毛玻璃悬浮轻提示与 .toastHUD(...) 修饰符
 │   ├── NoticeBanner.swift          # 信息/警示/错误通栏提示卡片
-│   ├── StructuredScaffold.swift    # 标杆级全屏页面脚手架 (自动管理 16pt 外边距与 24pt 段落流)
-│   ├── StructuredSection.swift     # 标杆级段落分组容器 (集成 HIG 标头与 12pt 内边距)
+│   ├── AuraScaffold.swift          # 标杆级全屏页面脚手架 (自动管理 16pt 外边距与 24pt 段落流)
+│   ├── AuraSection.swift           # 标杆级段落分组容器 (集成 HIG 标头与 12pt 内边距)
 │   ├── EmptyStateView.swift        # 标杆级居中空状态视图
 │   ├── TypewriterStreamingCard.swift # 打字机流式生成与呼吸光标卡片 (纯图标状态与零内置文案)
 │   ├── TimelineTaskRow.swift       # 38pt 饱满时间线节点与虚线空闲时段
@@ -79,7 +79,7 @@ Sources/StructuredDesignSystem/
 
 ```swift
 import SwiftUI
-import StructuredDesignSystem
+import AuraDesignSystem
 ```
 
 ### 2. 🤖 让 AI 助手接入业务工程 (AI-Driven Integration Guide)
@@ -103,8 +103,8 @@ struct MyScheduleView: View {
     @State private var taskDone = false
 
     var body: some View {
-        StructuredScaffold {
-            StructuredSection(
+        AuraScaffold {
+            AuraSection(
                 "今日日程",
                 icon: "calendar",
                 badgeText: "进行中"
@@ -135,7 +135,7 @@ struct MyScheduleView: View {
 
 ```swift
 // 1. 原生声明式提取
-StructuredSection("Upcoming Tasks", icon: "sparkles", badgeText: "Today") {
+AuraSection("Upcoming Tasks", icon: "sparkles", badgeText: "Today") {
     SettingsRow(
         icon: "bell.badge.fill",
         iconColor: .orange,
@@ -156,7 +156,7 @@ NoticeBanner(style: .info, "Cloud sync complete", actionTitle: "View")
 
 ```swift
 // 动态非本地化用户名或文件夹名称
-StructuredSection(verbatim: userFolder.title, icon: "folder") {
+AuraSection(verbatim: userFolder.title, icon: "folder") {
     SettingsRow(
         verbatim: account.displayName,
         subtitle: account.email
