@@ -58,6 +58,7 @@ public struct DesignSystemGalleryView: View {
                 themePaletteSelectorSection
                 heroBannerDemoSection
                 timelineSection
+                quickActionCardSection
                 segmentedAndControlsSection
                 flowLayoutAndChipsSection
                 navigationAndPagingSection
@@ -235,10 +236,38 @@ public struct DesignSystemGalleryView: View {
         }
     }
 
-    // MARK: - 05 胶囊分段选择器与按压手感
+    // MARK: - 05 快捷入口卡片 (QuickActionCard & i18n Elasticity)
+    private var quickActionCardSection: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
+            sectionTitle("05 快捷入口卡片与多语言自适应 (QuickActionCard)")
+
+            HStack(spacing: DesignSystem.Spacing.medium) {
+                QuickActionCard(
+                    icon: "lightbulb.fill",
+                    iconColor: currentTheme.color,
+                    title: "灵感写稿",
+                    subtitle: "AI 智能生成"
+                ) {
+                    showToast = true
+                }
+
+                QuickActionCard(
+                    icon: "photo.badge.plus.fill",
+                    iconColor: .orange,
+                    title: "相册选图",
+                    subtitle: "提取截屏文案"
+                ) {
+                    showToast = true
+                }
+            }
+            .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    // MARK: - 06 胶囊分段选择器与按压手感
     private var segmentedAndControlsSection: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
-            sectionTitle("04 软底胶囊分段器与按压手感 (PillSegmentedPicker)")
+            sectionTitle("06 软底胶囊分段器与按压手感 (PillSegmentedPicker)")
 
             BaseCard {
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {

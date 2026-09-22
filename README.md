@@ -54,11 +54,13 @@ Sources/AuraDesignSystem/
 │   ├── AuraSection.swift           # 标杆级段落分组容器 (集成 HIG 标头与 12pt 内边距)
 │   ├── EmptyStateView.swift        # 标杆级居中空状态视图
 │   ├── TypewriterStreamingCard.swift # 打字机流式生成与呼吸光标卡片 (纯图标状态与零内置文案)
+│   ├── QuickActionCard.swift       # 仪表盘与首页双列快捷入口卡片 (多语言自适应等高与防断行)
 │   ├── TimelineTaskRow.swift       # 38pt 饱满时间线节点与虚线空闲时段
 │   ├── ChecklistRow.swift          # 子任务与待办清单行
 │   └── HeroBannerSheet.swift       # 沉浸式彩色顶栏模态卡片
 └── Previews/
     ├── DesignSystemGalleryView.swift # 全景交互式组件展厅 (包含全量组件与即时换肤)
+    ├── DocumentHomeSpecimenView.swift # 文稿管理首页与 iOS 26 原生导航重构展厅 (多语言长文案抗压)
     ├── UpstreamBacklogShowcaseView.swift # 回补组件专项展示 (密文输入、动态统计副标与可选值 HUD)
     ├── TypographyShowcaseView.swift   # 排版字阶与 WCAG 4.5:1 对比度规范专项展示
     ├── AISettingsSpecimenView.swift   # 标杆级表单与设置排版重构视图 (对齐基准、单行微标与原生导航)

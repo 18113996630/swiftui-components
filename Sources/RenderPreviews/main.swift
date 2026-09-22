@@ -70,49 +70,59 @@ struct DeviceFrameContainer<Content: View>: View {
 struct RenderPreviewsApp {
     @MainActor
     static func main() {
-        let outputDir = "/Users/huangrong/.antigravity-profile2/.gemini/antigravity/brain/04ad9f6f-977f-4c9a-93dc-5a9643dd4326"
+        let outputDir = "/Users/huangrong/.antigravity-profile2/.gemini/antigravity/brain/86bd639e-2cd8-437b-bfdf-e64264701384"
 
-        print("Rendering AI Settings Specimen (Refined) - Light...")
+        print("Rendering Document Home Specimen (Refined) - Light...")
         render(
             view: DeviceFrameContainer(colorScheme: .light) {
-                AISettingsSpecimenView()
+                DocumentHomeSpecimenView()
                     .themePalette(.indigo)
             },
-            outputPath: "\(outputDir)/ai_settings_refined.png"
+            outputPath: "\(outputDir)/document_home_refined.png"
         )
 
-        print("Rendering AI Settings Specimen (Before) - Light...")
-        render(
-            view: DeviceFrameContainer(colorScheme: .light) {
-                AIBuggyOriginalSpecimenView()
-            },
-            outputPath: "\(outputDir)/ai_settings_before.png"
-        )
-
-        print("Rendering AI Settings Specimen - Dark...")
+        print("Rendering Document Home Specimen (Refined) - Dark...")
         render(
             view: DeviceFrameContainer(colorScheme: .dark) {
-                AISettingsSpecimenView()
+                DocumentHomeSpecimenView()
                     .themePalette(.indigo)
             },
-            outputPath: "\(outputDir)/ai_settings_dark.png"
+            outputPath: "\(outputDir)/document_home_dark.png"
         )
 
-        print("Rendering Side-by-Side Comparison...")
+        print("Rendering Document Home Specimen (Refined) - English...")
+        render(
+            view: DeviceFrameContainer(colorScheme: .light) {
+                DocumentHomeSpecimenView(language: .english)
+                    .themePalette(.indigo)
+            },
+            outputPath: "\(outputDir)/document_home_english.png"
+        )
+
+        print("Rendering Document Home Specimen (Refined) - German (Long Copy)...")
+        render(
+            view: DeviceFrameContainer(colorScheme: .light) {
+                DocumentHomeSpecimenView(language: .german)
+                    .themePalette(.indigo)
+            },
+            outputPath: "\(outputDir)/document_home_german.png"
+        )
+
+        print("Rendering Document Home Side-by-Side Comparison...")
         render(
             view: HStack(spacing: 24) {
                 VStack(spacing: 8) {
                     HStack(spacing: 6) {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundColor(.red)
-                        Text("原版设计（锯齿错位 · 图标噪音 · 折行截断）")
+                        Text("原版现状（单字孤行 · 标签杂糅 · 纯黑底栏抢戏）")
                             .font(.system(size: 15, weight: .bold, design: .rounded))
                             .foregroundColor(.primary)
                     }
                     .padding(.top, 12)
 
                     DeviceFrameContainer(colorScheme: .light) {
-                        AIBuggyOriginalSpecimenView()
+                        DocumentHomeOriginalBuggyView()
                     }
                 }
 
@@ -120,14 +130,14 @@ struct RenderPreviewsApp {
                     HStack(spacing: 6) {
                         Image(systemName: "checkmark.seal.fill")
                             .foregroundColor(.indigo)
-                        Text("标杆重构（平整对齐 · 纯净骨架 · 精致单行）")
+                        Text("标杆重构（舒展单行 · 规整微标 · 原生 iOS26 质感）")
                             .font(.system(size: 15, weight: .bold, design: .rounded))
                             .foregroundColor(.primary)
                     }
                     .padding(.top, 12)
 
                     DeviceFrameContainer(colorScheme: .light) {
-                        AISettingsSpecimenView()
+                        DocumentHomeSpecimenView(language: .chinese)
                             .themePalette(.indigo)
                     }
                 }
@@ -135,7 +145,46 @@ struct RenderPreviewsApp {
             .padding(20)
             .background(Color(red: 0.93, green: 0.93, blue: 0.95)),
             frameSize: CGSize(width: 910, height: 950),
-            outputPath: "\(outputDir)/ai_settings_comparison.png"
+            outputPath: "\(outputDir)/document_home_comparison.png"
+        )
+
+        print("Rendering Document Home i18n Matrix (Chinese / English / German)...")
+        render(
+            view: HStack(spacing: 20) {
+                VStack(spacing: 8) {
+                    Text("中文（标准字长 · 舒展对齐）")
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .foregroundColor(.primary)
+                    DeviceFrameContainer(colorScheme: .light) {
+                        DocumentHomeSpecimenView(language: .chinese)
+                            .themePalette(.indigo)
+                    }
+                }
+
+                VStack(spacing: 8) {
+                    Text("English（单词空格自适应）")
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .foregroundColor(.primary)
+                    DeviceFrameContainer(colorScheme: .light) {
+                        DocumentHomeSpecimenView(language: .english)
+                            .themePalette(.indigo)
+                    }
+                }
+
+                VStack(spacing: 8) {
+                    Text("Deutsch（复合超长词抗压测试）")
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .foregroundColor(.primary)
+                    DeviceFrameContainer(colorScheme: .light) {
+                        DocumentHomeSpecimenView(language: .german)
+                            .themePalette(.indigo)
+                    }
+                }
+            }
+            .padding(20)
+            .background(Color(red: 0.93, green: 0.93, blue: 0.95)),
+            frameSize: CGSize(width: 1350, height: 950),
+            outputPath: "\(outputDir)/document_home_i18n_matrix.png"
         )
 
         print("All previews rendered successfully!")

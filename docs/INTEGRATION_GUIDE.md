@@ -206,6 +206,7 @@ AI 在实现功能前，必须先查阅此表，匹配对应官方组件：
 | **时间线行** | `TimelineTaskRow` | 38pt 饱满节点时间线项与空闲时段连接线 | `TimelineTaskRow(time: "10:00", title: "会议", isCompleted: $done)` |
 | **待办清单** | `ChecklistRow` | 待办复选框列表行，带完成划线与渐隐动效 | `ChecklistRow(title: "完成文档编写", isCompleted: $done)` |
 | **模态表单** | `HeroBannerSheet` | 顶部沉浸式色彩渐变卡片模态弹窗 | `HeroBannerSheet(title: "升级提示", icon: "crown.fill") { ... }` |
+| **快捷入口** | `QuickActionCard` | 仪表盘/首页双列快捷入口卡片，支持多语言自适应等高与防断行 | `QuickActionCard(icon: "lightbulb.fill", title: "灵感写稿", subtitle: "AI 智能生成") { ... }` |
 | **悬浮轻提示** | `ToastHUD` / 修饰符 | 居中毛玻璃微提示气泡，支持 Bool 及可选值驱动 | `.toastHUD(message: $toastMsg) / .toastHUD(isPresented: $show, "已保存")` |
 | **流式布局** | `FlowLayout` | 自动折行标签云布局协议 | `FlowLayout(spacing: 8) { ForEach(...) { ... } }` |
 
