@@ -1,19 +1,54 @@
 # swiftui-components
 
-一个面向 iOS 15+ 的 SwiftUI 结构化设计系统，提供统一的设计令牌与可复用组件，便于多个项目快速接入并保持视觉一致。
+一个面向 iOS 18+ 的 SwiftUI 结构化设计系统（StructuredDesignSystem），以 ADA 获奖级视觉基调为准则，提供统一的设计令牌、原子微标、交互选择器、流式排版与浮岛卡片容器，便于多个独立应用保持高度视觉一致性与细腻交互手感。
+
+## 设计系统核心规范 (Design DNA)
+
+1. **全域 SF Pro Rounded 排版**：温暖、圆润且高辨识度，涵盖 `largeTitle`、`title`、`headline`、`body`、`caption` 与 `time`。
+2. **连续曲率超椭圆 (Continuous Curvature)**：全系采用 `.continuous`，梯度覆盖 8pt (微标) / 14pt (按钮) / 20pt (卡片) / 28pt (浮岛主画布)。
+3. **9 色多巴胺活力主题色盘**：`ThemePalette` 贯穿，通过 `@Environment(\.themePalette)` 全局穿透与即时换肤。
+4. **漫反射环境光阴影与细微边缘**：统一 `24pt / 32pt` 柔和扩散阴影与 `0.5pt hairlineBorder` 边缘高光。
+5. **物理弹性缩放与细腻触觉**：统一 `ScaleButtonStyle` (0.97 按压缩放) 与集中式 `HapticManager` 机械震动反馈。
 
 ## 目录结构
 
 ```text
 Sources/StructuredDesignSystem/
-├── DesignSystem.swift              # 颜色、字体、间距、圆角、阴影、布局与动效令牌
-├── Styles/ScaleButtonStyle.swift   # 按压缩放、透明度与触觉反馈
-└── Components/
-    ├── BaseCard.swift              # 基础卡片容器
-    ├── IconBadge.swift             # 图标徽章
-    ├── PillButton.swift            # 胶囊按钮
-    ├── TimelineTaskRow.swift       # 时间线任务行
-    └── SettingsRow.swift           # 设置列表行
+├── DesignSystem.swift              # 主题调色盘、颜色、字体、间距、圆角、漫反射阴影令牌
+├── Theme/
+│   └── ThemeEnvironment.swift      # @Environment(\.themePalette) 全局动态主题穿透
+├── Extensions/
+│   └── View+DesignSystem.swift     # .structuredCard() / .fadeEdge() / .ambientShadow() / .hairlineBorder()
+├── Styles/
+│   ├── ScaleButtonStyle.swift     # 弹性物理微缩触感样式 (.scale)
+│   └── HapticManager.swift         # 集中式触觉震动管理器 (Impact / Notification / Selection)
+├── Components/
+│   ├── BaseCard.swift              # 浮岛卡片容器 (支持 20/28pt、内边距与细边框)
+│   ├── FlowLayout.swift            # 原生流式折行布局协议 (iOS 16+)
+│   ├── PillBadge.swift             # 纯展示型语义彩色微标 (.subtle / .solid / .neutral)
+│   ├── PillButton.swift            # 胶囊微交互标签按键
+│   ├── SelectableChip.swift        # 状态多选/单选胶囊芯片 (带 Checkmark 动画)
+│   ├── DeletableChip.swift         # 可删除标签胶囊 (#话题标签与禁用词)
+│   ├── PillSegmentedPicker.swift   # 软底胶囊分段选择器
+│   ├── UnderlinedTabBar.swift      # 极简纯文字下划线导航 Tab 栏
+│   ├── PagingIndicatorCapsule.swift # 物理弹性伸缩胶囊分页指示器 (支持数字胶囊)
+│   ├── PrecisionSliderRow.swift    # 等宽数值微调滑杆行 (带 .monospacedDigit 微标)
+│   ├── SFSymbolGridPicker.swift    # SF Symbol 图标矩阵选择器
+│   ├── PaletteColorPicker.swift    # ConcentricColorCircle / ColorPickerRow / 9色主题拾取
+│   ├── HIGSectionHeaderView.swift  # 表单与分组标准头部视图 (带图标底座与微标)
+│   ├── SettingsRow.swift           # 标准表单行 (支持泛型 trailing、Toggle 与副标题)
+│   ├── ClearableTextFieldRow.swift # 卡片式带清空与快捷粘贴输入行
+│   ├── FormRowActionButton.swift  # 表单居中功能与危险操作按钮
+│   ├── KeyboardAccessoryBar.swift  # 键盘快捷辅助工具栏 (含字数统计)
+│   ├── ToastHUD.swift              # 毛玻璃悬浮轻提示与 .toastHUD(...) 修饰符
+│   ├── NoticeBanner.swift          # 信息/警示/错误通栏提示卡片
+│   ├── EmptyStateView.swift        # 标杆级居中空状态视图
+│   ├── TypewriterStreamingCard.swift # 打字机流式生成与呼吸光标卡片
+│   ├── TimelineTaskRow.swift       # 38pt 饱满时间线节点与虚线空闲时段
+│   ├── ChecklistRow.swift          # 子任务与待办清单行
+│   └── HeroBannerSheet.swift       # 沉浸式彩色顶栏模态卡片
+└── Previews/
+    └── DesignSystemGalleryView.swift # 全景交互式组件展厅 (包含全量组件与即时换肤)
 ```
 
 ## 接入方式
@@ -25,61 +60,17 @@ Sources/StructuredDesignSystem/
 也可以在 `Package.swift` 中添加：
 
 ```swift
-.package(url: "https://github.com/your-org/swiftui-components.git", from: "0.1.0")
+.package(url: "https://github.com/your-org/swiftui-components.git", from: "0.2.0")
 ```
 
-最后在需要使用的文件中引入：
-
-```swift
-import StructuredDesignSystem
-```
-
-## 使用示例
+在代码中引入：
 
 ```swift
 import SwiftUI
 import StructuredDesignSystem
-
-struct HomeView: View {
-    var body: some View {
-        ScrollView {
-            VStack(spacing: DesignSystem.Layout.sectionSpacing) {
-                BaseCard {
-                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
-                        Text("今日焦点")
-                            .font(DesignSystem.Typography.headline)
-
-                        Text("完成组件库重构并发布 1.0.0 版本")
-                            .font(DesignSystem.Typography.body)
-                            .foregroundColor(DesignSystem.Color.textSecondary)
-                    }
-                }
-
-                TimelineTaskRow(
-                    time: "09:00",
-                    title: "晨会",
-                    subtitle: "同步项目进度",
-                    icon: "person.2.fill",
-                    color: .blue,
-                    isLast: false
-                )
-
-                SettingsRow(
-                    icon: "bell.fill",
-                    iconColor: .green,
-                    title: "通知与提醒"
-                ) {
-                    print("点击了通知")
-                }
-            }
-            .padding(DesignSystem.Layout.pagePadding)
-        }
-        .background(DesignSystem.Color.background)
-    }
-}
 ```
 
-## 本地构建
+## 本地构建与验证
 
 ```bash
 xcodebuild \
