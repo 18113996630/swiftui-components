@@ -68,29 +68,35 @@ let package = Package(
 
 > 💡 **核心建议**：AI 默认没有外部组件库的记忆，极易幻觉造轮子或使用原生生硬排版。在业务宿主工程中，请将以下规则内容保存为 `.cursorrules`、`AGENTS.md` 或直接粘贴给 AI。
 
-### 📋 可直接复制的下游 AI 提示词模板 (System Prompt / Agent Rules)
+### 📋 方案 1：专供下游业务工程的极简动态指针模板 (Zero-Maintenance Prompt)
+
+> 💡 **最佳实践**：在下游业务工程中，**严禁硬编码组件清单或静态 API 说明**。只需将以下 10 余行精炼规则写入业务工程的 `.cursorrules`、`AGENTS.md` 或直接投喂给 AI 即可：
 
 ```markdown
 # 业务工程 UI 开发规范：AuraDesignSystem 消费法则
 
-你正在使用 `AuraDesignSystem` 组件库为本应用构建高质感、原生细腻的 SwiftUI 界面。作为业务调用方，你只需消费组件库提供的标准组件与设计规范，无需重复实现基础组件：
+本工程接入了 `AuraDesignSystem` 统一微光设计系统。为避免规则过时与版本错配，你必须遵循以下动态自省流程：
 
-## 1. 核心消费铁律
-- 【严禁自造轮子】：页面、卡片、设置行、输入框、按钮、分段选择器、徽标、弹窗等元素必须优先使用 `AuraDesignSystem` 已提供的标准组件，严禁手写粗糙的原生平替。
-- 【排版与对比度】：核心标题一律用 `DesignSystem.Color.textPrimary`；次级文字一律用 `DesignSystem.Color.textSecondary`，严禁二次叠加 `.opacity(...)` 造成文字发灰发虚。
-- 【连续超椭圆】：所有圆角统一使用 `DesignSystem.CornerRadius` 并附带 `.continuous` 连续曲率样式。
-- 【多巴胺主题联动】：高光与强调色使用 `@Environment(\.themePalette)`，严禁硬编码固定颜色（如 `.foregroundColor(.blue)`）。
-- 【微交互手感】：所有可交互按钮必须附带 `.buttonStyle(ScaleButtonStyle())`，触感统一调用 `HapticManager.shared.impact(...)`。
-- 【业务文案传参分流】：
-  - 界面静态文案（如标题、说明、按钮文案）：直接传未具名字符串字面量（Xcode String Catalog 会自动抓取）；
-  - 运行时动态数据（如用户名、API 返回文本）：必须使用 `verbatim: String` 初始化器传参，防编译报错与误索引。
+## 1. 动态查阅最新规范（单一真实源）
+在编写、重构或设计任何 UI 界面之前，你必须优先读取本地 SPM 已检出的组件库权威文档：
+- 本地路径 1（SPM CLI 工程）：`.build/checkouts/swiftui-components/docs/AI_INTEGRATION_GUIDE.md`
+- 本地路径 2（Xcode 现代工程）：`SourcePackages/checkouts/swiftui-components/docs/AI_INTEGRATION_GUIDE.md`
+- 若找不到上述路径，请使用文件查找工具检索 `AI_INTEGRATION_GUIDE.md`，或在线查阅：
+  `https://raw.githubusercontent.com/18113996630/swiftui-components/main/docs/AI_INTEGRATION_GUIDE.md`
+**查阅文档中的「组件速查表」匹配现有官方组件，严禁自造轮子。**
 
 ## 2. 页面搭建三层黄金架构
-任何业务或表单页面必须按照以下骨架标准组装：
+所有页面必须严格按照组件库规范构建，禁止随意散落 ScrollView + VStack：
 AuraScaffold (全屏外框，自动提供 16pt 外边距与 24pt 段落流)
   └── AuraSection (段落标头，集成 SF 图标底座与状态徽标)
         └── BaseCard (纯白浮岛高质感卡片容器)
               └── 行组件 (SettingsRow / ChecklistRow / TimelineTaskRow / ClearableTextFieldRow 等)
+
+## 3. 核心设计与交互红线
+- 【排版与对比度】：核心标题用 `DesignSystem.Color.textPrimary`；次级文字用 `DesignSystem.Color.textSecondary`（严禁二次叠加 opacity造成发灰发虚）。
+- 【多巴胺主题联动】：高光与强调色使用 `@Environment(\.themePalette)`，严禁硬编码纯色。
+- 【按键弹性触感】：所有可点击按钮必须挂载 `.buttonStyle(ScaleButtonStyle())`。
+- 【文案传参分流】：静态文案直接传未具名字面量（供 String Catalog 自动抓取）；动态数据使用 `verbatim:` 参数。
 ```
 
 ---

@@ -6,7 +6,7 @@
 
 ## 🚨 核心铁律：双重同步机制（Dual Synchronization Protocol）
 
-> **红线原则 1（外部文档同步）**：**只要增加、删除、修改了任何 UI 组件、设计令牌或公开 API，必须在同一任务流程中同步更新 `README.md` 中的说明，严禁出现外部文档与实际用法脱节的情况。**
+> **红线原则 1（外部文档与 AI 知识源同步）**：**只要增加、删除、修改了任何 UI 组件、设计令牌或公开 API，必须在同一任务流程中同步更新 `README.md` 与 `docs/AI_INTEGRATION_GUIDE.md`（包含组件能力速查表与调用示例）。下游业务工程的 AI 依赖本地检出目录进行自省，严禁出现外部文档与实际用法脱节的情况。**
 >
 > **红线原则 2（源码注释同步）**：**只要增加、修改或重构了任何 UI 组件或公开 API，必须在同一任务流程中同步更新组件源码上方的 Swift DocComments（`///`），必须包含组件核心定位、⚠️ 设计系统红线（Design Guardrails）与最小可用示例代码块（```swift），严禁源码注释与代码实际行为脱节，确保下游消费系统与 AI 助手通过 LSP 能够获取精确的用法与设计约束。**
 
@@ -16,18 +16,17 @@
 
 ### 1. 新增组件（New Component）
 - [ ] **源码 DocComments 注入**：新增组件必须配备结构化 `///` 注释，包含一句话职责定位、`⚠️ 设计系统红线（Design Guardrails）` 与包含标准调用方式的 `/// ```swift` 代码示例。
-- [ ] **目录树同步**：在 `README.md` 的「目录结构」树状图中，在对应的分级目录（如 `Components/`、`Previews/`）下补全新增的 Swift 文件路径，并附带一句话核心定位与功能职责说明。
-- [ ] **规范与索引**：若新增了关键级组件（如核心容器、交互选择器），在 `README.md` 的组件列表或特性清单中补充其使用场景与核心特性。
+- [ ] **目录树与 AI 指南同步**：在 `README.md` 目录树中补全新增的 Swift 文件路径与核心定位；同时在 `docs/AI_INTEGRATION_GUIDE.md` 的「组件能力速查字典」表格中补齐分类、组件名、职责与最小调用代码。
 - [ ] **展厅接入**：将新组件接入 [`DesignSystemGalleryView.swift`](Sources/AuraDesignSystem/Previews/DesignSystemGalleryView.swift) 或配套的专项 Specimen 视图中，确保有直观的交互预览。
 
 ### 2. 修改组件（Modify Component）
 - [ ] **源码 DocComments 修正**：同步更新类型与初始化器上方的 `///` 注释，确保参数描述、`⚠️ 设计系统红线` 与 `/// ```swift` 代码示例与最新代码完全一致。
-- [ ] **API 示例核验**：若修改了组件的初始化器参数（`init`）、样式枚举（如 `.subtle` / `.solid`）、环境键或关键修饰符，必须逐一核对并同步更新 `README.md` 中引用的代码示例。
+- [ ] **API 示例与速查表核验**：若修改了组件的初始化器参数（`init`）、样式枚举（如 `.subtle` / `.solid`）、环境键或关键修饰符，必须同步更新 `README.md` 和 `docs/AI_INTEGRATION_GUIDE.md` 中引用的调用示例。
 - [ ] **破坏性变更提示**：若调整了默认参数或废弃了旧属性，必须在文档中明确更新后的调用方式，避免外部消费项目编译失败。
 
 ### 3. 删除/重命名组件（Delete / Rename Component）
-- [ ] **目录树剔除**：立即从 `README.md` 目录树中移除或更名对应文件路径，严禁遗留失效的组件声明。
-- [ ] **清理陈旧引用**：清理 `README.md` 中所有提及该组件的代码片段与描述文本。
+- [ ] **目录树与速查表剔除**：立即从 `README.md` 目录树与 `docs/AI_INTEGRATION_GUIDE.md` 组件表中移除或更名对应组件，严禁遗留失效的组件声明。
+- [ ] **清理陈旧引用**：清理文档中所有提及该组件的代码片段与描述文本。
 
 ### 4. 设计令牌变更（Design Tokens Update）
 - [ ] **设计规范同步**：若在 `DesignSystem.swift` 中对色彩（`Color`）、字阶（`Typography`）、间距（`Spacing`）、圆角（`CornerRadius`）或阴影（`Shadow`）进行了增改或规范调优，必须同步更新 `README.md` 中的「设计系统核心规范 (Design DNA)」章节。

@@ -84,13 +84,14 @@ import AuraDesignSystem
 
 ### 2. 🤖 让 AI 助手接入业务工程 (AI-Driven Integration Guide)
 
-若你需要通过 **AI 编程助手**（如 Antigravity、Claude Code、Cursor、Windsurf 等）在其他业务项目中无缝接入并消费本组件库，请直接参阅：
+若你需要通过 **AI 编程助手**（如 Antigravity、Claude Code、Cursor、Windsurf 等）在其他业务项目中无缝接入并消费本组件库，请参阅：
 👉 **[AI 接入与协同规范全流程指南 (`docs/AI_INTEGRATION_GUIDE.md`)](docs/AI_INTEGRATION_GUIDE.md)**
 
-该文档包含：
-- 完整的 6 步接入流水线全景图
-- **开箱即用 Prompt 模板**（可直接存为 `.cursorrules`、`AGENTS.md` 或直接投喂给 AI）
-- 官方全组件能力速查全景表（防止 AI 幻觉与重复自造轮子）
+> 💡 **免维护机制**：本组件库推荐采用 **SPM 本地包自省模式（Local Package Inspection）**。业务工程的 `AGENTS.md` 无需复制粘贴组件清单，只需配置 10 行动态指针，让 AI 直接读取本地 SPM 检出的 `AI_INTEGRATION_GUIDE.md`。组件库升级时文档随包自动对齐，**100% 杜绝文档过时与版本错配**。
+
+该指南提供：
+- 极简下游 AI 动态指针模板（直接复制至业务工程 `.cursorrules` / `AGENTS.md`）
+- 官方全量组件能力速查全景字典（防止 AI 幻觉与重复自造轮子）
 - 国际化双通道分流规范（`LocalizedStringKey` 自动提取 vs `verbatim:` 直出）
 - 常见翻车反模式与标准修复对照（Bad vs Good）
 
