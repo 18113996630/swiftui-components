@@ -10,6 +10,8 @@
 4. **漫反射环境光阴影与细微边缘**：统一 `24pt / 32pt` 柔和扩散阴影（Aura Ambient Shadow）与 `0.5pt hairlineBorder` 边缘高光。
 5. **物理弹性缩放与细腻触觉**：统一 `ScaleButtonStyle` (0.97 按压缩放) 与集中式 `HapticManager` 机械震动反馈。
 6. **全域国际化与零内置文案 (Zero Built-in Copy & String Catalog 自动抓取)**：组件库内所有展示文本组件全面支持 `LocalizedStringKey`，由 Xcode 15+ 编译期 AST 全自动提取至 `.xcstrings`；并提供 `verbatim:` 动态直出通道。组件内部坚持 100% 零内置文案，状态优先采用纯图标与微动效表达，实现完全通用的组件库架构。
+7. **多语言弹性自适应与容器物理等高 (i18n Elasticity & Equal-Height Pairing)**：并排图文卡片强制设置 `maxHeight: .infinity` 并在父级声明 `.fixedSize(horizontal: false, vertical: true)`；副标配备弹性折行与 `minimumScaleFactor(0.75~0.82)`，左侧图标顶部锚定，彻底根绝英文/德语长文案导致的高低参差与单字孤行。
+8. **单行元数据秩序化与层级退让 (Metadata Uniformity & Subdued Inactive States)**：卡片内辅助元数据维持单一容器形态（全中性微标或纯文本流），普通属性与时效信息左右分流；分段器与底栏未激活态严格退居中灰（`textSecondary`），杜绝浓黑抢戏。
 
 ## 目录结构
 

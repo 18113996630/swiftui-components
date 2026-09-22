@@ -93,7 +93,7 @@ AuraScaffold (全屏外框，自动锁死 16pt 外边距与 24pt 段落流，打
         └── BaseCard (纯白浮岛高质感卡片仓；若子组件已内置 padding 则显式声明 padding: 0)
               └── 业务核心组件 (SettingsRow / ChecklistRow / TimelineTaskRow / FlowLayout / ClearableTextFieldRow 等)
 
-## 3. 🏆 Apple Design Award (ADA) 级七大顶流人机交互铁律（严禁触碰）
+## 3. 🏆 Apple Design Award (ADA) 级九大顶流人机交互铁律（严禁触碰）
 无论你在构建表单、看板、时间线、标签池、详情页还是模态弹窗，必须严格遵循 Apple 官方推荐标杆标准：
 
 1. 【原生导航通透感与零浮动药丸 (Native Chrome / Zero Floating Pills)】：
@@ -117,11 +117,19 @@ AuraScaffold (全屏外框，自动锁死 16pt 外边距与 24pt 段落流，打
    - ❌ 绝对禁止 20pt + 20pt 嵌套堆叠，把卡片撑成臃肿虚胖的面团。
 6. 【物理微缩触感与底部安全区 (Haptic & Safe Area)】：
    - 所有可点击按钮必须挂载 `.buttonStyle(ScaleButtonStyle())` 赋予 0.97 物理缩放与轻触微震动（`HapticManager.impact(.light)`）。
-   - 滚动容器内部底部必须预留 `.padding(.bottom, 24~40)`，确保滑动到最底部时最后一个卡片不贴合 Home Indicator 小黑条。
+   - 滚动容器内部底部必须预留 `.padding(.bottom, 24~40)`（悬浮 TabBar 场景预留 88~100pt），确保滑动到底部时不遮挡内容且不贴合 Home Indicator 小黑条。
 7. 【内容优先与无障碍对比度 (Content-First & WCAG 4.5:1+)】：
    - 核心大标题与关键数值使用 `DesignSystem.Color.textPrimary`（`Color.primary`），次级说明使用 `DesignSystem.Color.textSecondary`（`Color.secondary`）。
    - ❌ 绝对禁止在 `secondary` 基础上二次叠加 `.opacity(0.6)` 造成文字发灰、发虚的疲劳感。
    - 浮岛纯白卡片（连续曲率超椭圆 + 微漫反射阴影）作为文本保护仓，不可让大面积正文直接裸露在冷灰底板上。
+8. 【多语言长文案弹性与并排等高律 (i18n Elasticity & Equal-Height Pairing)】：
+   - 多列网格或 HStack 并排图文卡片（如 `QuickActionCard`）必须在卡片内声明 `.frame(maxWidth: .infinity, maxHeight: .infinity)`，并在父级 HStack 施加 `.fixedSize(horizontal: false, vertical: true)`。
+   - ❌ 绝对禁止假定中文短字长！针对英文、德语等长字符语言，副标题必须允许自适应折行（最多 2 行），并搭配 `minimumScaleFactor(0.75~0.82)`，确保左右两张卡片无论语言行数如何，永远 100% 自适应拉齐高度，彻底根除参差不齐的狗牙高低差。
+   - 容器强制采用 `HStack(alignment: .top)` 顶部锚定图标底座，多行排版时长字符绝不引发图标垂直居中浮动。
+9. 【单行元数据容器秩序与未激活态退让 (Metadata Uniformity & Subdued Inactive States)】：
+   - 同一卡片或同一行内的辅助元数据必须维持容器统一形态！❌ 绝对禁止同一行混杂“蓝底胶囊 + 灰底胶囊 + 裸露纯文本”的三套杂糅拼凑，要么全部采用统一微标（`PillBadge(..., style: .neutral)`），要么全部采用中圆点连接纯文本流（`·`）。
+   - 普通统计属性（时长、字数、页数）严禁滥用彩色微标，仅保留给真正的关键状态；内容客观属性与时效性信息（如“2天前”）一律通过 `Spacer()` 分流，形成左属性、右时效的标准流动。
+   - 任何分段选择器、TabBar 或微交互按键，未激活态的前景色彩必须严格使用 `DesignSystem.Color.textSecondary`（`Color.secondary`），❌ 严禁使用未经弱化的浓纯黑（`#000000`），确保已激活项稳居视觉第一焦点。
 
 ## 4. 🎯 全场景 6 大标杆页面骨架速查索引 (6 Universal Archetypes)
 根据当前业务需求类型，直接对应套用组件库官方规范（详见 INTEGRATION_GUIDE.md 第五步）：
@@ -136,10 +144,13 @@ AuraScaffold (全屏外框，自动锁死 16pt 外边距与 24pt 段落流，打
 交付代码前，你必须逐项确认已无以下低级瑕疵：
 - [ ] 模态弹窗关闭/完成键是否为原生 ToolbarItem（0 个浮动白色药丸）？
 - [ ] 卡片内所有行文字起点是否严格对齐在 58pt 垂直线上？
+- [ ] 并排卡片是否已设置等高（fixedSize + maxHeight: .infinity）并支持多语言长文案弹性？
+- [ ] 卡片底部元数据是否容器统一（无胶囊与裸文本杂糅），且左属性、右时效分离？
+- [ ] 底栏或分段选择器未选中态是否退让为 secondary 中灰（无刺眼纯黑）？
 - [ ] 动态数值是否已挂载 `.monospacedDigit()` 避免跳变？
 - [ ] 中文副标题是否已精炼且无单字孤行、断词断句？
 - [ ] 多行列表的外层 BaseCard 是否已显式声明 `padding: 0`？
-- [ ] 滚动容器底部是否已留足 24~40pt 呼吸边距避让 Home Indicator？
+- [ ] 滚动容器底部是否已留足 24~40pt（或悬浮底栏 88pt）呼吸边距避让 Home Indicator？
 - [ ] 终端 `swift build` 是否处于 0 错误、0 警告编译通过状态？
 ```
 

@@ -48,6 +48,10 @@
    - 涉及主题色渲染的组件必须支持通过 `@Environment(\.themePalette)` 动态注入与响应换肤。
 4. **人体工学与微交互**：
    - 交互按键默认绑定 `ScaleButtonStyle`（0.97 按压缩放）与 `HapticManager` 机械震动反馈，禁止生硬无反馈的状态跳变。
+5. **多语言弹性自适应与物理等高律 (i18n Elasticity & Equal-Height Pairing)**：
+   - 并排卡片严禁写死固定高度或假定中文短字长，必须支持多语言弹性折行与 `minimumScaleFactor(0.75~0.82)`，并通过父级 `.fixedSize(horizontal: false, vertical: true)` 与 `.frame(maxHeight: .infinity)` 实现并排卡片自动等高对齐；左侧图标强制顶部锚定（`HStack(alignment: .top)`），严禁垂直居中上下飘移。
+6. **元数据微标单一规范与未激活态退让 (Metadata Uniformity & Subdued Inactive States)**：
+   - 同行辅助元数据必须维持单一容器形态（全中性微标或纯文本流），严禁胶囊与裸露文本混用；普通属性（时长/字数）与时效信息（距今多久）通过 `Spacer()` 左右分流；底栏与选择器未激活态严格退居 `Color.secondary` 中灰，严禁未弱化的浓纯黑（`#000000`）抢夺焦点。
 
 ---
 
