@@ -14,6 +14,9 @@
 ## 目录结构
 
 ```text
+docs/
+└── AI_INTEGRATION_GUIDE.md        # AI 助手在外部业务工程接入本组件库的完整工作流与防翻车指南
+
 Sources/StructuredDesignSystem/
 ├── DesignSystem.swift              # 主题调色盘、颜色、字体、间距、圆角、漫反射阴影令牌
 ├── Localization/
@@ -28,6 +31,7 @@ Sources/StructuredDesignSystem/
 ├── Components/
 │   ├── BaseCard.swift              # 浮岛卡片容器 (支持 20/28pt、内边距与细边框)
 │   ├── FlowLayout.swift            # 原生流式折行布局协议 (iOS 16+)
+│   ├── IconBadge.swift             # 彩色超椭圆图标徽章底座 (白底 SF Symbol 强化对比度)
 │   ├── PillBadge.swift             # 纯展示型语义彩色微标 (.subtle / .solid / .neutral)
 │   ├── PillButton.swift            # 胶囊微交互标签按键
 │   ├── SelectableChip.swift        # 状态多选/单选胶囊芯片 (带 Checkmark 动画)
@@ -60,24 +64,37 @@ Sources/StructuredDesignSystem/
 
 ## 接入方式
 
-### Swift Package Manager
+### 1. Swift Package Manager 依赖引入
 
-在 Xcode 中选择 **File > Add Package Dependencies...**，然后填入本仓库地址。
+在 Xcode 中选择 **File > Add Package Dependencies...**，填入本仓库地址：
+`https://github.com/18113996630/swiftui-components.git`
 
-也可以在 `Package.swift` 中添加：
+或在宿主工程的 `Package.swift` 中添加：
 
 ```swift
-.package(url: "https://github.com/your-org/swiftui-components.git", from: "0.2.0")
+.package(url: "https://github.com/18113996630/swiftui-components.git", branch: "main")
 ```
 
-在代码中引入：
+在 Target 依赖中引入并在代码中导入：
 
 ```swift
 import SwiftUI
 import StructuredDesignSystem
 ```
 
-### 标杆级页面搭建范式 (Scaffold & Section)
+### 2. 🤖 让 AI 助手接入业务工程 (AI-Driven Integration Guide)
+
+若你需要通过 **AI 编程助手**（如 Antigravity、Claude Code、Cursor、Windsurf 等）在其他业务项目中无缝接入并消费本组件库，请直接参阅：
+👉 **[AI 接入与协同规范全流程指南 (`docs/AI_INTEGRATION_GUIDE.md`)](docs/AI_INTEGRATION_GUIDE.md)**
+
+该文档包含：
+- 完整的 6 步接入流水线全景图
+- **开箱即用 Prompt 模板**（可直接存为 `.cursorrules`、`AGENTS.md` 或直接投喂给 AI）
+- 官方全组件能力速查全景表（防止 AI 幻觉与重复自造轮子）
+- 国际化双通道分流规范（`LocalizedStringKey` 自动提取 vs `verbatim:` 直出）
+- 常见翻车反模式与标准修复对照（Bad vs Good）
+
+### 3. 标杆级页面搭建范式 (Scaffold & Section)
 
 使用组件库内置的页面级与段落级脚手架，无需手动配平边距与背景，默认产出符合 HIG 律动的高级质感：
 
