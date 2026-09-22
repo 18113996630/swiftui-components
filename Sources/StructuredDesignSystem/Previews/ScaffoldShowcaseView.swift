@@ -85,7 +85,7 @@ public struct ScaffoldShowcaseView: View {
             StructuredSection(
                 title: "多巴胺主题换肤",
                 icon: "paintpalette.fill",
-                badgeText: selectedTheme.title
+                badgeVerbatim: selectedTheme.title
             ) {
                 BaseCard {
                     VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {

@@ -1,15 +1,52 @@
 import SwiftUI
 
 /// 标杆级软底胶囊分段选择器（Structured 风格，支持 @Environment(\.themePalette)）
-/// 彻底去除原生 UISegmentedControl 的硬金属反光，采用平滑滑块与触觉反馈
+///
+/// 彻底去除原生 UISegmentedControl 的硬金属反光，采用平滑滑块与触觉反馈。
+/// 全面支持 Xcode 15+ String Catalog (`.xcstrings`) 自动静态提取与 `verbatim:` 动态非本地化直出。
+///
+/// ⚠️ 设计系统红线（Design Guardrails）：
+/// 1. 【零内置文案】：分段器选项文案由调用方通过闭包生成，无内置文本；
+/// 2. 【去金属质感】：底板采用 `fillTertiary` 软底，禁用系统默认带反光的高光灰底；
+/// 3. 【弹簧几何匹配】：选中滑块使用 `.matchedGeometryEffect` 与 `Spring` 动效驱动。
+///
+/// ```swift
+/// // 1. 本地化映射（Xcode 自动提取）
+/// PillSegmentedPicker(
+///     selection: $mode,
+///     items: AppMode.allCases,
+///     titleKeyForSelection: { $0.localizationKey }
+/// )
+///
+/// // 2. 动态非本地化映射
+/// PillSegmentedPicker(
+///     selection: $tab,
+///     items: tabs,
+///     titleForSelection: { $0.name }
+/// )
+/// ```
 public struct PillSegmentedPicker<Selection: Hashable>: View {
     @Environment(\.themePalette) private var themePalette
     @Binding private var selection: Selection
     private let items: [Selection]
-    private let titleForSelection: (Selection) -> String
+    private let textForSelection: (Selection) -> LocalizedText
     private let customActiveColor: Color?
     @Namespace private var animationNamespace
 
+    /// 本地化初始化器（支持 String Catalog 静态提取）
+    public init(
+        selection: Binding<Selection>,
+        items: [Selection],
+        activeColor: Color? = nil,
+        titleKeyForSelection: @escaping (Selection) -> LocalizedStringKey
+    ) {
+        self._selection = selection
+        self.items = items
+        self.customActiveColor = activeColor
+        self.textForSelection = { .localized(titleKeyForSelection($0)) }
+    }
+
+    /// 动态非本地化直出初始化器
     public init(
         selection: Binding<Selection>,
         items: [Selection],
@@ -19,7 +56,7 @@ public struct PillSegmentedPicker<Selection: Hashable>: View {
         self._selection = selection
         self.items = items
         self.customActiveColor = activeColor
-        self.titleForSelection = titleForSelection
+        self.textForSelection = { .verbatim(titleForSelection($0)) }
     }
 
     private var effectiveActiveColor: Color {
@@ -38,7 +75,7 @@ public struct PillSegmentedPicker<Selection: Hashable>: View {
                         selection = item
                     }
                 }) {
-                    Text(titleForSelection(item))
+                    textForSelection(item).makeText()
                         .font(DesignSystem.Typography.headline)
                         .fontWeight(isSelected ? .semibold : .medium)
                         .foregroundColor(isSelected ? .white : DesignSystem.Color.textSecondary)
@@ -65,7 +102,6 @@ public struct PillSegmentedPicker<Selection: Hashable>: View {
     }
 }
 
-// MARK: - Previews
 #Preview("PillSegmentedPicker Preview") {
     PillSegmentedPickerPreviewHelper()
 }

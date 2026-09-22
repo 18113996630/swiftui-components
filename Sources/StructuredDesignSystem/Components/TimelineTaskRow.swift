@@ -3,37 +3,101 @@ import SwiftUI
 /// Structured 标志性 38pt 饱满时间线任务节点行
 ///
 /// 包含 38pt 饱满彩色圆形图标、时间跨度刻度、主副标题、分类微标与触觉打卡检查环。
+/// 全面支持 Xcode 15+ String Catalog (`.xcstrings`) 自动静态提取与 `verbatim:` 动态非本地化直出。
 ///
 /// ⚠️ 设计系统红线（Design Guardrails）：
 /// 1. 【时间排版】：时间刻度统一采用 `DesignSystem.Typography.time` (13pt Semibold Rounded)，确保数字清脆笃定；
 /// 2. 【多巴胺节点】：节点圆形背景强制采用饱满实心渐变或主色，配纯白图标，杜绝低饱和透明度混色发脏；
-/// 3. 【正向完成反馈】：打卡按钮完成态采用温和正向绿 + 触觉震动反馈，未完成态采用柔和中性轮廓。
+/// 3. 【正向完成反馈】：打卡按钮完成态采用温和正向绿 + 触觉震动反馈，未完成态采用柔和中性轮廓；
+/// 4. 【零内置文案】：节点标题、副标题、标签与空闲时段提示纯由外部传入。
 ///
 /// ```swift
+/// // 1. 本地化字面量（Xcode 自动提取）
 /// TimelineTaskRow(
 ///     time: "09:30",
-///     timeRange: "09:30 - 10:30 (1小时)",
-///     title: "核心系统架构设计",
-///     subtitle: "明确技术红线与容器边界",
+///     timeRange: "09:30 - 10:30 (1 hr)",
+///     title: "task_arch_design",
+///     subtitle: "task_arch_desc",
 ///     icon: "laptopcomputer",
+///     isCompleted: $taskCompleted
+/// )
+///
+/// // 2. 动态非本地化直出
+/// TimelineTaskRow(
+///     verbatim: item.timeString,
+///     title: item.title,
+///     icon: item.icon,
 ///     isCompleted: $taskCompleted
 /// )
 /// ```
 public struct TimelineTaskRow: View {
     @Environment(\.themePalette) private var themePalette
     private let time: String
-    private let timeRange: String?
-    private let title: String
-    private let subtitle: String?
+    private let timeRange: LocalizedText?
+    private let title: LocalizedText
+    private let subtitle: LocalizedText?
     private let icon: String
     private let customColor: Color?
-    private let tagTitle: String?
+    private let tagTitle: LocalizedText?
     private let tagIcon: String?
     private let isLast: Bool
     @Binding private var isCompleted: Bool
 
+    /// 本地化初始化器（Apple 原生风格）
     public init(
         time: String,
+        timeRange: LocalizedStringKey? = nil,
+        _ title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
+        icon: String,
+        color: Color? = nil,
+        tagTitle: LocalizedStringKey? = nil,
+        tagIcon: String? = nil,
+        isLast: Bool = false,
+        isCompleted: Binding<Bool>? = nil
+    ) {
+        self.time = time
+        self.timeRange = timeRange.map { .localized($0) }
+        self.title = .localized(title)
+        self.subtitle = subtitle.map { .localized($0) }
+        self.icon = icon
+        self.customColor = color
+        self.tagTitle = tagTitle.map { .localized($0) }
+        self.tagIcon = tagIcon
+        self.isLast = isLast
+        self._isCompleted = isCompleted ?? .constant(false)
+    }
+
+    /// 具名本地化初始化器
+    public init(
+        time: String,
+        timeRange: LocalizedStringKey? = nil,
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
+        icon: String,
+        color: Color? = nil,
+        tagTitle: LocalizedStringKey? = nil,
+        tagIcon: String? = nil,
+        isLast: Bool = false,
+        isCompleted: Binding<Bool>? = nil
+    ) {
+        self.init(
+            time: time,
+            timeRange: timeRange,
+            title,
+            subtitle: subtitle,
+            icon: icon,
+            color: color,
+            tagTitle: tagTitle,
+            tagIcon: tagIcon,
+            isLast: isLast,
+            isCompleted: isCompleted
+        )
+    }
+
+    /// 动态非本地化直出初始化器
+    public init(
+        verbatim time: String,
         timeRange: String? = nil,
         title: String,
         subtitle: String? = nil,
@@ -45,12 +109,12 @@ public struct TimelineTaskRow: View {
         isCompleted: Binding<Bool>? = nil
     ) {
         self.time = time
-        self.timeRange = timeRange
-        self.title = title
-        self.subtitle = subtitle
+        self.timeRange = timeRange.map { .verbatim($0) }
+        self.title = .verbatim(title)
+        self.subtitle = subtitle.map { .verbatim($0) }
         self.icon = icon
         self.customColor = color
-        self.tagTitle = tagTitle
+        self.tagTitle = tagTitle.map { .verbatim($0) }
         self.tagIcon = tagIcon
         self.isLast = isLast
         self._isCompleted = isCompleted ?? .constant(false)
@@ -94,18 +158,18 @@ public struct TimelineTaskRow: View {
             // 任务核心信息
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.tiny) {
                 if let timeRange {
-                    Text(timeRange)
+                    timeRange.makeText()
                         .font(DesignSystem.Typography.caption)
                         .foregroundColor(DesignSystem.Color.textTertiary)
                 }
 
-                Text(title)
+                title.makeText()
                     .font(DesignSystem.Typography.headline)
                     .foregroundColor(isCompleted ? DesignSystem.Color.textTertiary : DesignSystem.Color.textPrimary)
                     .strikethrough(isCompleted, color: DesignSystem.Color.textTertiary)
 
                 if let subtitle {
-                    Text(subtitle)
+                    subtitle.makeText()
                         .font(DesignSystem.Typography.body)
                         .foregroundColor(DesignSystem.Color.textSecondary)
                 }
@@ -113,9 +177,15 @@ public struct TimelineTaskRow: View {
                 if let tagTitle {
                     HStack(spacing: DesignSystem.Spacing.small) {
                         PillButton(
-                            title: tagTitle,
+                            verbatim: "",
                             icon: tagIcon ?? "checklist",
                             action: {}
+                        )
+                        .overlay(
+                            tagTitle.makeText()
+                                .font(DesignSystem.Typography.caption)
+                                .fontWeight(.medium)
+                                .padding(.leading, 20)
                         )
 
                         Image(systemName: "doc.text")
@@ -170,11 +240,23 @@ public struct TimelineTaskRow: View {
 /// 标杆级空闲时段间隔行（Structured 虚线空档节律）
 public struct TimelineGapRow: View {
     private let time: String?
-    private let note: String
+    private let note: LocalizedText
 
-    public init(time: String? = nil, note: String) {
+    /// 本地化初始化器（Apple 原生风格）
+    public init(time: String? = nil, _ note: LocalizedStringKey) {
         self.time = time
-        self.note = note
+        self.note = .localized(note)
+    }
+
+    /// 具名本地化初始化器
+    public init(time: String? = nil, note: LocalizedStringKey) {
+        self.init(time: time, note)
+    }
+
+    /// 动态非本地化直出初始化器
+    public init(time: String? = nil, verbatim note: String) {
+        self.time = time
+        self.note = .verbatim(note)
     }
 
     public var body: some View {
@@ -202,7 +284,7 @@ public struct TimelineGapRow: View {
             HStack(spacing: 4) {
                 Image(systemName: "sparkles")
                     .font(.system(size: 11))
-                Text(note)
+                note.makeText()
                     .font(DesignSystem.Typography.caption)
             }
             .foregroundColor(DesignSystem.Color.textTertiary)

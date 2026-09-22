@@ -1,16 +1,55 @@
 import SwiftUI
 
 /// 极简纯文字下划线导航 Tab 栏（Structured 标杆风格）
-/// 区别于大胶囊分段器，更适合主页面或模态弹窗顶部的一级内容视域切换
+///
+/// 区别于大胶囊分段器，更适合主页面或模态弹窗顶部的一级内容视域切换。
+/// 全面支持 Xcode 15+ String Catalog (`.xcstrings`) 自动静态提取与 `verbatim:` 动态非本地化直出。
+///
+/// ⚠️ 设计系统红线（Design Guardrails）：
+/// 1. 【零内置文案】：Tab 栏选项文案纯由调用方通过闭包提供；
+/// 2. 【下划线微动效】：指示器为 22x3pt 胶囊，切换时严格依赖 `.matchedGeometryEffect` 与轻触刻度手感；
+/// 3. 【无二次透明稀释】：选中态文字为 `textPrimary`，未选中态为 `textTertiary`，黑白骨架清晰。
+///
+/// ```swift
+/// // 1. 本地化映射（Xcode 自动提取）
+/// UnderlinedTabBar(
+///     selection: $selectedTab,
+///     tabs: TabItem.allCases,
+///     titleKeyForTab: { $0.localizationKey }
+/// )
+///
+/// // 2. 动态非本地化直出
+/// UnderlinedTabBar(
+///     selection: $selectedTab,
+///     tabs: dynamicTabs,
+///     titleForTab: { $0.title }
+/// )
+/// ```
 public struct UnderlinedTabBar<T: Hashable>: View {
     @Environment(\.themePalette) private var themePalette
     @Binding private var selection: T
     private let tabs: [T]
-    private let titleForTab: (T) -> String
+    private let textForTab: (T) -> LocalizedText
     private let customActiveColor: Color?
     private let spacing: CGFloat
     @Namespace private var underlineNamespace
 
+    /// 本地化初始化器（支持 String Catalog 自动抓取）
+    public init(
+        selection: Binding<T>,
+        tabs: [T],
+        activeColor: Color? = nil,
+        spacing: CGFloat = 28,
+        titleKeyForTab: @escaping (T) -> LocalizedStringKey
+    ) {
+        self._selection = selection
+        self.tabs = tabs
+        self.customActiveColor = activeColor
+        self.spacing = spacing
+        self.textForTab = { .localized(titleKeyForTab($0)) }
+    }
+
+    /// 动态非本地化直出初始化器
     public init(
         selection: Binding<T>,
         tabs: [T],
@@ -22,7 +61,7 @@ public struct UnderlinedTabBar<T: Hashable>: View {
         self.tabs = tabs
         self.customActiveColor = activeColor
         self.spacing = spacing
-        self.titleForTab = titleForTab
+        self.textForTab = { .verbatim(titleForTab($0)) }
     }
 
     private var effectiveActiveColor: Color {
@@ -42,7 +81,7 @@ public struct UnderlinedTabBar<T: Hashable>: View {
                     }
                 }) {
                     VStack(spacing: 8) {
-                        Text(titleForTab(tab))
+                        textForTab(tab).makeText()
                             .font(DesignSystem.Typography.headline)
                             .fontWeight(isSelected ? .bold : .medium)
                             .foregroundColor(isSelected ? DesignSystem.Color.textPrimary : DesignSystem.Color.textTertiary)

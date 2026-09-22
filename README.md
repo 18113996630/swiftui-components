@@ -9,12 +9,15 @@
 3. **9 色多巴胺活力主题色盘**：`ThemePalette` 贯穿，通过 `@Environment(\.themePalette)` 全局穿透与即时换肤。
 4. **漫反射环境光阴影与细微边缘**：统一 `24pt / 32pt` 柔和扩散阴影与 `0.5pt hairlineBorder` 边缘高光。
 5. **物理弹性缩放与细腻触觉**：统一 `ScaleButtonStyle` (0.97 按压缩放) 与集中式 `HapticManager` 机械震动反馈。
+6. **全域国际化与零内置文案 (Zero Built-in Copy & String Catalog 自动抓取)**：组件库内所有展示文本组件全面支持 `LocalizedStringKey`，由 Xcode 15+ 编译期 AST 全自动提取至 `.xcstrings`；并提供 `verbatim:` 动态直出通道。组件内部坚持 100% 零内置文案，状态优先采用纯图标与微动效表达，实现完全通用的组件库架构。
 
 ## 目录结构
 
 ```text
 Sources/StructuredDesignSystem/
 ├── DesignSystem.swift              # 主题调色盘、颜色、字体、间距、圆角、漫反射阴影令牌
+├── Localization/
+│   └── LocalizedText.swift         # 统一国际化双通道文本底座 (LocalizedStringKey 抓取 & verbatim 直出)
 ├── Theme/
 │   └── ThemeEnvironment.swift      # @Environment(\.themePalette) 全局动态主题穿透
 ├── Extensions/
@@ -29,23 +32,23 @@ Sources/StructuredDesignSystem/
 │   ├── PillButton.swift            # 胶囊微交互标签按键
 │   ├── SelectableChip.swift        # 状态多选/单选胶囊芯片 (带 Checkmark 动画)
 │   ├── DeletableChip.swift         # 可删除标签胶囊 (#话题标签与禁用词)
-│   ├── PillSegmentedPicker.swift   # 软底胶囊分段选择器
-│   ├── UnderlinedTabBar.swift      # 极简纯文字下划线导航 Tab 栏
+│   ├── PillSegmentedPicker.swift   # 软底胶囊分段选择器 (支持本地化与动态映射)
+│   ├── UnderlinedTabBar.swift      # 极简纯文字下划线导航 Tab 栏 (支持本地化与动态映射)
 │   ├── PagingIndicatorCapsule.swift # 物理弹性伸缩胶囊分页指示器 (支持数字胶囊)
 │   ├── PrecisionSliderRow.swift    # 等宽数值微调滑杆行 (带 .monospacedDigit 微标)
 │   ├── SFSymbolGridPicker.swift    # SF Symbol 图标矩阵选择器
 │   ├── PaletteColorPicker.swift    # ConcentricColorCircle / ColorPickerRow / 9色主题拾取
 │   ├── HIGSectionHeaderView.swift  # 表单与分组标准头部视图 (带图标底座与微标)
-│   ├── SettingsRow.swift           # 标准表单行 (支持泛型 trailing、Toggle 与副标题)
+│   ├── SettingsRow.swift           # 标准表单行 (支持泛型 trailing、Toggle、通用 badgeText)
 │   ├── ClearableTextFieldRow.swift # 卡片式带清空与快捷粘贴输入行
 │   ├── FormRowActionButton.swift  # 表单居中功能与危险操作按钮
-│   ├── KeyboardAccessoryBar.swift  # 键盘快捷辅助工具栏 (含字数统计)
+│   ├── KeyboardAccessoryBar.swift  # 键盘快捷辅助工具栏 (通用计数与收起键盘)
 │   ├── ToastHUD.swift              # 毛玻璃悬浮轻提示与 .toastHUD(...) 修饰符
 │   ├── NoticeBanner.swift          # 信息/警示/错误通栏提示卡片
 │   ├── StructuredScaffold.swift    # 标杆级全屏页面脚手架 (自动管理 16pt 外边距与 24pt 段落流)
 │   ├── StructuredSection.swift     # 标杆级段落分组容器 (集成 HIG 标头与 12pt 内边距)
 │   ├── EmptyStateView.swift        # 标杆级居中空状态视图
-│   ├── TypewriterStreamingCard.swift # 打字机流式生成与呼吸光标卡片
+│   ├── TypewriterStreamingCard.swift # 打字机流式生成与呼吸光标卡片 (纯图标状态与零内置文案)
 │   ├── TimelineTaskRow.swift       # 38pt 饱满时间线节点与虚线空闲时段
 │   ├── ChecklistRow.swift          # 子任务与待办清单行
 │   └── HeroBannerSheet.swift       # 沉浸式彩色顶栏模态卡片
@@ -85,7 +88,7 @@ struct MyScheduleView: View {
     var body: some View {
         StructuredScaffold {
             StructuredSection(
-                title: "今日日程",
+                "今日日程",
                 icon: "calendar",
                 badgeText: "进行中"
             ) {
@@ -105,11 +108,54 @@ struct MyScheduleView: View {
 }
 ```
 
+### 国际化最佳实践 (String Catalog 自动抓取与 Verbatim 直出)
+
+组件库遵循 Apple 原生 SwiftUI 签名设计，对所有包含文本的组件提供 `LocalizedStringKey` 与 `verbatim: String` 双通道：
+
+#### 1. 本地化字面量（Xcode 15+ String Catalog 全自动静态提取）
+
+编写 UI 代码时直接使用字符串字面量或 Apple 原生未具名签名，Xcode 会在编译阶段由 AST 扫描器自动将文本提取到宿主工程的 `Localizable.xcstrings` 中：
+
+```swift
+// 1. 原生声明式提取
+StructuredSection("Upcoming Tasks", icon: "sparkles", badgeText: "Today") {
+    SettingsRow(
+        icon: "bell.badge.fill",
+        iconColor: .orange,
+        title: "Daily Notification",
+        subtitle: "Send soft haptics 15m before event",
+        badgeText: "PRO"
+    )
+}
+
+// 2. 交互控件与空状态自动提取
+PillButton("Create New Script", icon: "plus") { ... }
+NoticeBanner(style: .info, "Cloud sync complete", actionTitle: "View")
+```
+
+#### 2. 动态运行时数据直出（Verbatim 模式）
+
+对于来自服务器 API、用户输入或非本地化的动态字符串，使用 `verbatim:` 初始化器原样直出，避免查表开销与漏译警告：
+
+```swift
+// 动态非本地化用户名或文件夹名称
+StructuredSection(verbatim: userFolder.title, icon: "folder") {
+    SettingsRow(
+        verbatim: account.displayName,
+        subtitle: account.email
+    )
+}
+```
+
+#### 3. 零内置文案哲学（状态优先以图标呈现）
+
+组件库坚持 100% 通用化，**不内置任何写死的业务自然语言文案**：
+- **状态指示器**：如 `TypewriterStreamingCard` 的“生成中”状态默认通过呼吸闪烁圆点与动效直接表达，无需绑定语言；
+- **通用功能按键**：如 `KeyboardAccessoryBar` 的收起键盘按键默认采用 `keyboard.chevron.compact.down` 纯图标；如需文字可由外部显式传入 `doneTitle: "Done"`；
+- **业务微标**：如 `SettingsRow` 的徽标由 `badgeText` 参数完全托管，由业务方决定展示 `"PRO"`、`"VIP"` 还是 `"NEW"`。
+
 ## 本地构建与验证
 
 ```bash
-xcodebuild \
-  -scheme StructuredDesignSystem \
-  -destination "generic/platform=iOS" \
-  build
+swift build
 ```

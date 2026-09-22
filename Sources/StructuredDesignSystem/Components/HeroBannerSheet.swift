@@ -1,19 +1,93 @@
 import SwiftUI
 
 /// 标杆级沉浸式彩色顶栏卡片/弹窗容器（Structured 风格）
-/// 对应任务编辑与新建任务时的彩色渐变顶栏、超椭圆白色图标、关闭胶囊与步骤指示器
+///
+/// 对应任务编辑与新建任务时的彩色渐变顶栏、超椭圆白色图标、关闭胶囊与步骤指示器。
+/// 全面支持 Xcode 15+ String Catalog (`.xcstrings`) 自动静态提取与 `verbatim:` 动态非本地化直出。
+///
+/// ⚠️ 设计系统红线（Design Guardrails）：
+/// 1. 【零内置文案】：顶栏标题、副标题与步骤微标纯由外部注入；
+/// 2. 【28pt 浮岛圆角】：外层容器强制裁剪为 `largeCard` (28pt) 连续曲率超椭圆；
+/// 3. 【多巴胺顶栏】：顶栏采用对应 `ThemePalette.gradient`，图标置于 52x52 纯白超椭圆底座中。
+///
+/// ```swift
+/// // 1. 本地化字面量（Xcode 自动提取）
+/// HeroBannerSheet(
+///     "sheet_edit_task_title",
+///     subtitle: "sheet_edit_task_time",
+///     stepText: "step_suggestion",
+///     icon: "envelope.fill",
+///     palette: .berry
+/// ) {
+///     contentView
+/// }
+///
+/// // 2. 动态非本地化直出
+/// HeroBannerSheet(
+///     verbatim: event.title,
+///     subtitle: event.timeDescription,
+///     icon: event.icon
+/// ) {
+///     contentView
+/// }
+/// ```
 public struct HeroBannerSheet<Content: View>: View {
-    private let title: String
-    private let subtitle: String?
-    private let stepText: String?
+    private let title: LocalizedText
+    private let subtitle: LocalizedText?
+    private let stepText: LocalizedText?
     private let icon: String
     private let palette: ThemePalette
     private let onClose: (() -> Void)?
     private let onTrailingAction: (() -> Void)?
     private let content: Content
 
+    /// 本地化初始化器（Apple 原生风格）
     public init(
-        title: String,
+        _ title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
+        stepText: LocalizedStringKey? = nil,
+        icon: String = "sparkles",
+        palette: ThemePalette = .berry,
+        onClose: (() -> Void)? = nil,
+        onTrailingAction: (() -> Void)? = nil,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.title = .localized(title)
+        self.subtitle = subtitle.map { .localized($0) }
+        self.stepText = stepText.map { .localized($0) }
+        self.icon = icon
+        self.palette = palette
+        self.onClose = onClose
+        self.onTrailingAction = onTrailingAction
+        self.content = content()
+    }
+
+    /// 具名本地化初始化器
+    public init(
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
+        stepText: LocalizedStringKey? = nil,
+        icon: String = "sparkles",
+        palette: ThemePalette = .berry,
+        onClose: (() -> Void)? = nil,
+        onTrailingAction: (() -> Void)? = nil,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.init(
+            title,
+            subtitle: subtitle,
+            stepText: stepText,
+            icon: icon,
+            palette: palette,
+            onClose: onClose,
+            onTrailingAction: onTrailingAction,
+            content: content
+        )
+    }
+
+    /// 动态非本地化直出初始化器
+    public init(
+        verbatim title: String,
         subtitle: String? = nil,
         stepText: String? = nil,
         icon: String = "sparkles",
@@ -22,9 +96,9 @@ public struct HeroBannerSheet<Content: View>: View {
         onTrailingAction: (() -> Void)? = nil,
         @ViewBuilder content: () -> Content
     ) {
-        self.title = title
-        self.subtitle = subtitle
-        self.stepText = stepText
+        self.title = .verbatim(title)
+        self.subtitle = subtitle.map { .verbatim($0) }
+        self.stepText = stepText.map { .verbatim($0) }
         self.icon = icon
         self.palette = palette
         self.onClose = onClose
@@ -94,17 +168,17 @@ public struct HeroBannerSheet<Content: View>: View {
 
                         VStack(alignment: .leading, spacing: 2) {
                             if let stepText {
-                                Text(stepText)
+                                stepText.makeText()
                                     .font(DesignSystem.Typography.caption)
                                     .foregroundColor(Color.white.opacity(0.8))
                             }
 
-                            Text(title)
+                            title.makeText()
                                 .font(DesignSystem.Typography.title)
                                 .foregroundColor(.white)
 
                             if let subtitle {
-                                Text(subtitle)
+                                subtitle.makeText()
                                     .font(DesignSystem.Typography.caption)
                                     .foregroundColor(Color.white.opacity(0.85))
                             }
@@ -126,13 +200,12 @@ public struct HeroBannerSheet<Content: View>: View {
     }
 }
 
-// MARK: - Previews
 #Preview("HeroBannerSheet Preview") {
     ZStack {
         Color.black.opacity(0.2).ignoresSafeArea()
 
         HeroBannerSheet(
-            title: "回复邮件与方案",
+            "回复邮件与方案",
             subtitle: "10:00 - 10:45 • 45分钟",
             stepText: "建议任务",
             icon: "envelope.fill",

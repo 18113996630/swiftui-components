@@ -1,22 +1,67 @@
 import SwiftUI
 
 /// 带有删除功能的标签胶囊（Structured 风格）
-/// 常用于已选话题标签（如 #职场干货）、自定义禁用词或分发渠道标签
+///
+/// 常用于已选话题标签（如 #职场干货）、自定义禁用词或分发渠道标签。
+/// 全面支持 Xcode 15+ String Catalog (`.xcstrings`) 自动静态提取与 `verbatim:` 动态非本地化直出。
+///
+/// ⚠️ 设计系统红线（Design Guardrails）：
+/// 1. 【零内置文案】：标签内容不内置任何写死文本，由外部数据驱动；
+/// 2. 【删除轻触感】：点击删除图标自动触发轻微轻触觉震动反馈；
+/// 3. 【无二次透明稀释】：主文案采用 `textPrimary`，前缀符号采用强调色，严格对齐 WCAG 4.5:1。
+///
+/// ```swift
+/// // 1. 本地化字面量（Xcode 自动提取）
+/// DeletableChip("tag_growth", prefix: "#") {
+///     removeTag()
+/// }
+///
+/// // 2. 动态集合直出（Verbatim 模式）
+/// ForEach(tags, id: \.self) { tag in
+///     DeletableChip(verbatim: tag) {
+///         delete(tag)
+///     }
+/// }
+/// ```
 public struct DeletableChip: View {
     @Environment(\.themePalette) private var themePalette
 
-    private let title: String
+    private let title: LocalizedText
     private let prefix: String?
     private let customColor: Color?
     private let onDelete: () -> Void
 
+    /// 本地化初始化器（Apple 原生风格）
     public init(
-        title: String,
+        _ title: LocalizedStringKey,
         prefix: String? = "#",
         color: Color? = nil,
         onDelete: @escaping () -> Void
     ) {
-        self.title = title
+        self.title = .localized(title)
+        self.prefix = prefix
+        self.customColor = color
+        self.onDelete = onDelete
+    }
+
+    /// 具名本地化初始化器
+    public init(
+        title: LocalizedStringKey,
+        prefix: String? = "#",
+        color: Color? = nil,
+        onDelete: @escaping () -> Void
+    ) {
+        self.init(title, prefix: prefix, color: color, onDelete: onDelete)
+    }
+
+    /// 动态非本地化直出初始化器
+    public init(
+        verbatim title: String,
+        prefix: String? = "#",
+        color: Color? = nil,
+        onDelete: @escaping () -> Void
+    ) {
+        self.title = .verbatim(title)
         self.prefix = prefix
         self.customColor = color
         self.onDelete = onDelete
@@ -35,7 +80,7 @@ public struct DeletableChip: View {
                     .fontWeight(.bold)
             }
 
-            Text(title)
+            title.makeText()
                 .font(DesignSystem.Typography.caption)
                 .foregroundColor(DesignSystem.Color.textPrimary)
                 .fontWeight(.medium)
@@ -77,7 +122,7 @@ private struct DeletableChipPreviewHelper: View {
 
             FlowLayout(horizontalSpacing: 8, verticalSpacing: 10) {
                 ForEach(tags, id: \.self) { tag in
-                    DeletableChip(title: tag) {
+                    DeletableChip(verbatim: tag) {
                         tags.removeAll { $0 == tag }
                     }
                 }

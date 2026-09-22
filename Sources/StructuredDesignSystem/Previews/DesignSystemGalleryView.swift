@@ -307,7 +307,7 @@ public struct DesignSystemGalleryView: View {
                         FlowLayout(horizontalSpacing: 8, verticalSpacing: 8) {
                             ForEach(candidateChips, id: \.self) { chip in
                                 SelectableChip(
-                                    title: chip,
+                                    verbatim: chip,
                                     isSelected: selectedChips.contains(chip)
                                 ) {
                                     if selectedChips.contains(chip) {
@@ -329,7 +329,7 @@ public struct DesignSystemGalleryView: View {
 
                         FlowLayout(horizontalSpacing: 8, verticalSpacing: 8) {
                             ForEach(deletableTags, id: \.self) { tag in
-                                DeletableChip(title: tag) {
+                                DeletableChip(verbatim: tag) {
                                     deletableTags.removeAll { $0 == tag }
                                 }
                             }
@@ -620,7 +620,7 @@ public struct DesignSystemGalleryView: View {
                     icon: "lock.shield.fill",
                     iconColor: ThemePalette.indigo.color,
                     title: "高级会员与云端同步",
-                    showProBadge: isProActive
+                    badgeText: isProActive ? "PRO" : nil
                 ) {
                     isProActive.toggle()
                 }

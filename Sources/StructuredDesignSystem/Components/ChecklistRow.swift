@@ -1,21 +1,60 @@
 import SwiftUI
 
 /// 标杆级清单与待办行（Structured 风格，支持 @Environment(\.themePalette)）
-/// 对应任务详情中的子任务清单卡片，支持复选框勾选、删除线动效与右侧清除按钮
+///
+/// 对应任务详情中的子任务清单卡片，支持复选框勾选、删除线动效与右侧清除按钮。
+/// 全面支持 Xcode 15+ String Catalog (`.xcstrings`) 自动静态提取与 `verbatim:` 动态非本地化直出。
+///
+/// ⚠️ 设计系统红线（Design Guardrails）：
+/// 1. 【零内置文案】：待办条目标题纯由调用方显式注入；
+/// 2. 【复选框动效】：勾选状态切换必须联动 Spring 动画与轻微震动反馈；
+/// 3. 【删除线弱化】：完成态文字降级为 `textTertiary` 并附加中划线。
+///
+/// ```swift
+/// // 1. 本地化字面量（Xcode 自动提取）
+/// ChecklistRow("task_notification_toggle", isChecked: $itemDone)
+///
+/// // 2. 动态任务清单（Verbatim 直出）
+/// ChecklistRow(verbatim: dynamicTodo.title, isChecked: $dynamicTodo.isDone)
+/// ```
 public struct ChecklistRow: View {
     @Environment(\.themePalette) private var themePalette
-    private let title: String
+    private let title: LocalizedText
     @Binding private var isChecked: Bool
     private let customColor: Color?
     private let onDelete: (() -> Void)?
 
+    /// 本地化初始化器（Apple 原生风格）
     public init(
-        title: String,
+        _ title: LocalizedStringKey,
         isChecked: Binding<Bool>,
         activeColor: Color? = nil,
         onDelete: (() -> Void)? = nil
     ) {
-        self.title = title
+        self.title = .localized(title)
+        self._isChecked = isChecked
+        self.customColor = activeColor
+        self.onDelete = onDelete
+    }
+
+    /// 具名本地化初始化器
+    public init(
+        title: LocalizedStringKey,
+        isChecked: Binding<Bool>,
+        activeColor: Color? = nil,
+        onDelete: (() -> Void)? = nil
+    ) {
+        self.init(title, isChecked: isChecked, activeColor: activeColor, onDelete: onDelete)
+    }
+
+    /// 动态非本地化直出初始化器
+    public init(
+        verbatim title: String,
+        isChecked: Binding<Bool>,
+        activeColor: Color? = nil,
+        onDelete: (() -> Void)? = nil
+    ) {
+        self.title = .verbatim(title)
         self._isChecked = isChecked
         self.customColor = activeColor
         self.onDelete = onDelete
@@ -52,7 +91,7 @@ public struct ChecklistRow: View {
                     }
                     .frame(width: 28, height: 28)
 
-                    Text(title)
+                    title.makeText()
                         .font(DesignSystem.Typography.body)
                         .foregroundColor(isChecked ? DesignSystem.Color.textTertiary : DesignSystem.Color.textPrimary)
                         .strikethrough(isChecked, color: DesignSystem.Color.textTertiary)
@@ -81,7 +120,6 @@ public struct ChecklistRow: View {
     }
 }
 
-// MARK: - Previews
 #Preview("ChecklistRow Preview") {
     ChecklistRowPreviewHelper()
 }
@@ -98,9 +136,9 @@ private struct ChecklistRowPreviewHelper: View {
             VStack(spacing: DesignSystem.Spacing.large) {
                 BaseCard {
                     VStack(spacing: 0) {
-                        ChecklistRow(title: "开启通知提醒", isChecked: $item1, onDelete: {})
+                        ChecklistRow("开启通知提醒", isChecked: $item1, onDelete: {})
                         Divider()
-                        ChecklistRow(title: "导入系统日历事件", isChecked: $item2, onDelete: {})
+                        ChecklistRow("导入系统日历事件", isChecked: $item2, onDelete: {})
                         Divider()
                         ChecklistRow(title: "配置深浅色外观主题", isChecked: $item3, onDelete: {})
                     }

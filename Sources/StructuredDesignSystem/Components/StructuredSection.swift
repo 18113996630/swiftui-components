@@ -4,6 +4,7 @@ import SwiftUI
 ///
 /// 自动集成 `HIGSectionHeaderView` 头部标杆（包含微型彩色图标底座、SF Pro Rounded 粗体标题、
 /// 可选计数微标以及右侧操作插槽），并强制约束段落头部与卡片内容的 12pt 内间隔。
+/// 全面支持 Xcode 15+ String Catalog (`.xcstrings`) 自动静态提取与 `verbatim:` 动态非本地化直出。
 ///
 /// ⚠️ 设计系统红线（Design Guardrails）：
 /// 1. 【段落骨架定调】：章节段落必须使用 `StructuredSection` 包装，自动采用 `Color.primary` 撑起黑白骨架，严禁将章节大标裸露设为发虚淡灰色；
@@ -11,36 +12,76 @@ import SwiftUI
 /// 3. 【主题色点睛】：图标底座默认继承 `@Environment(\.themePalette)`，达成多巴胺色彩与黑白骨架的 20/80 黄金比例。
 ///
 /// ```swift
-/// StructuredSection(
-///     title: "核心任务",
-///     icon: "sparkles",
-///     badgeText: "今天"
-/// ) {
+/// // 1. 本地化字面量（Xcode 自动提取）
+/// StructuredSection("section_core_tasks", icon: "sparkles", badgeText: "today_badge") {
 ///     BaseCard {
-///         TimelineTaskRow(...)
+///         Text("card_content").font(DesignSystem.Typography.headline)
 ///     }
+/// }
+///
+/// // 2. 动态非本地化直出
+/// StructuredSection(verbatim: dynamicCategory.name, icon: "folder") {
+///     BaseCard { ... }
 /// }
 /// ```
 public struct StructuredSection<Content: View, Trailing: View>: View {
-    private let title: String
+    private let title: LocalizedText
     private let icon: String?
     private let iconColor: Color?
-    private let badgeText: String?
+    private let badgeText: LocalizedText?
     private let trailing: Trailing
     private let content: Content
 
+    /// 本地化初始化器（Apple 原生风格，支持 Xcode 自动抓取）
     public init(
-        title: String,
+        _ title: LocalizedStringKey,
+        icon: String? = nil,
+        iconColor: Color? = nil,
+        badgeText: LocalizedStringKey? = nil,
+        badgeVerbatim: String? = nil,
+        @ViewBuilder trailing: () -> Trailing,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.title = .localized(title)
+        self.icon = icon
+        self.iconColor = iconColor
+        if let badgeText {
+            self.badgeText = .localized(badgeText)
+        } else if let badgeVerbatim {
+            self.badgeText = .verbatim(badgeVerbatim)
+        } else {
+            self.badgeText = nil
+        }
+        self.trailing = trailing()
+        self.content = content()
+    }
+
+    /// 具名本地化初始化器
+    public init(
+        title: LocalizedStringKey,
+        icon: String? = nil,
+        iconColor: Color? = nil,
+        badgeText: LocalizedStringKey? = nil,
+        badgeVerbatim: String? = nil,
+        @ViewBuilder trailing: () -> Trailing,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.init(title, icon: icon, iconColor: iconColor, badgeText: badgeText, badgeVerbatim: badgeVerbatim, trailing: trailing, content: content)
+    }
+
+    /// 动态非本地化直出初始化器
+    public init(
+        verbatim title: String,
         icon: String? = nil,
         iconColor: Color? = nil,
         badgeText: String? = nil,
         @ViewBuilder trailing: () -> Trailing,
         @ViewBuilder content: () -> Content
     ) {
-        self.title = title
+        self.title = .verbatim(title)
         self.icon = icon
         self.iconColor = iconColor
-        self.badgeText = badgeText
+        self.badgeText = badgeText.map { .verbatim($0) }
         self.trailing = trailing()
         self.content = content()
     }
@@ -64,14 +105,52 @@ public struct StructuredSection<Content: View, Trailing: View>: View {
 
 public extension StructuredSection where Trailing == EmptyView {
     init(
-        title: String,
+        _ title: LocalizedStringKey,
+        icon: String? = nil,
+        iconColor: Color? = nil,
+        badgeText: LocalizedStringKey? = nil,
+        badgeVerbatim: String? = nil,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.init(
+            title,
+            icon: icon,
+            iconColor: iconColor,
+            badgeText: badgeText,
+            badgeVerbatim: badgeVerbatim,
+            trailing: { EmptyView() },
+            content: content
+        )
+    }
+
+    init(
+        title: LocalizedStringKey,
+        icon: String? = nil,
+        iconColor: Color? = nil,
+        badgeText: LocalizedStringKey? = nil,
+        badgeVerbatim: String? = nil,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.init(
+            title,
+            icon: icon,
+            iconColor: iconColor,
+            badgeText: badgeText,
+            badgeVerbatim: badgeVerbatim,
+            trailing: { EmptyView() },
+            content: content
+        )
+    }
+
+    init(
+        verbatim title: String,
         icon: String? = nil,
         iconColor: Color? = nil,
         badgeText: String? = nil,
         @ViewBuilder content: () -> Content
     ) {
         self.init(
-            title: title,
+            verbatim: title,
             icon: icon,
             iconColor: iconColor,
             badgeText: badgeText,
@@ -84,7 +163,7 @@ public extension StructuredSection where Trailing == EmptyView {
 #Preview("StructuredSection Demo") {
     VStack(spacing: DesignSystem.Spacing.large) {
         StructuredSection(
-            title: "日程规划",
+            "日程规划",
             icon: "calendar",
             badgeText: "3 项未完成"
         ) {

@@ -5,23 +5,74 @@ import UIKit
 #endif
 
 /// 带有一键清空与快捷粘贴的表单单行输入项（Structured 风格）
-/// 严格对齐卡片排版规范：左侧标题 + 右侧文本输入框 + 浮现式清空按钮
+///
+/// 严格对齐卡片排版规范：左侧标题 + 右侧文本输入框 + 浮现式清空按钮。
+/// 全面支持 Xcode 15+ String Catalog (`.xcstrings`) 自动静态提取与 `verbatim:` 动态非本地化直出。
+///
+/// ⚠️ 设计系统红线（Design Guardrails）：
+/// 1. 【零内置文案】：标题与占位符文案纯由调用方传入，无内置业务字串；
+/// 2. 【固定最小基线】：标题设置 `frame(minWidth: 70, alignment: .leading)`，确保多语言下表单对齐工整；
+/// 3. 【清空微动效】：点击清空图标触发轻柔触感震动与 0.15s 平滑透明度淡出。
+///
+/// ```swift
+/// // 1. 本地化字面量（Xcode 自动提取）
+/// ClearableTextFieldRow(
+///     "field_api_key",
+///     placeholder: "placeholder_enter_key",
+///     text: $apiKey,
+///     isSecure: true
+/// )
+///
+/// // 2. 动态非本地化直出
+/// ClearableTextFieldRow(
+///     verbatim: "ID",
+///     placeholder: "User ID",
+///     text: $userId
+/// )
+/// ```
 public struct ClearableTextFieldRow: View {
-    private let title: String
-    private let placeholder: String
+    private let title: LocalizedText
+    private let placeholder: LocalizedText
     @Binding private var text: String
     private let isSecure: Bool
     private let showPasteButton: Bool
 
+    /// 本地化初始化器（Apple 原生风格）
     public init(
-        title: String,
+        _ title: LocalizedStringKey,
+        placeholder: LocalizedStringKey,
+        text: Binding<String>,
+        isSecure: Bool = false,
+        showPasteButton: Bool = false
+    ) {
+        self.title = .localized(title)
+        self.placeholder = .localized(placeholder)
+        self._text = text
+        self.isSecure = isSecure
+        self.showPasteButton = showPasteButton
+    }
+
+    /// 具名本地化初始化器
+    public init(
+        title: LocalizedStringKey,
+        placeholder: LocalizedStringKey,
+        text: Binding<String>,
+        isSecure: Bool = false,
+        showPasteButton: Bool = false
+    ) {
+        self.init(title, placeholder: placeholder, text: text, isSecure: isSecure, showPasteButton: showPasteButton)
+    }
+
+    /// 动态非本地化直出初始化器
+    public init(
+        verbatim title: String,
         placeholder: String,
         text: Binding<String>,
         isSecure: Bool = false,
         showPasteButton: Bool = false
     ) {
-        self.title = title
-        self.placeholder = placeholder
+        self.title = .verbatim(title)
+        self.placeholder = .verbatim(placeholder)
         self._text = text
         self.isSecure = isSecure
         self.showPasteButton = showPasteButton
@@ -29,16 +80,20 @@ public struct ClearableTextFieldRow: View {
 
     public var body: some View {
         HStack(spacing: DesignSystem.Spacing.medium) {
-            Text(title)
+            title.makeText()
                 .font(DesignSystem.Typography.body)
                 .foregroundColor(DesignSystem.Color.textPrimary)
                 .frame(minWidth: 70, alignment: .leading)
 
             Group {
                 if isSecure {
-                    SecureField(placeholder, text: $text)
+                    SecureField(text: $text, prompt: placeholder.makeText()) {
+                        title.makeText()
+                    }
                 } else {
-                    TextField(placeholder, text: $text)
+                    TextField(text: $text, prompt: placeholder.makeText()) {
+                        title.makeText()
+                    }
                 }
             }
             .font(DesignSystem.Typography.body)
@@ -99,19 +154,19 @@ private struct ClearableTextFieldPreviewHelper: View {
                 BaseCard {
                     VStack(spacing: DesignSystem.Spacing.medium) {
                         ClearableTextFieldRow(
-                            title: "接口地址",
-                            placeholder: "https://api.openai.com/v1",
-                            text: $endpoint,
-                            showPasteButton: true
+                            "API 密钥",
+                            placeholder: "输入 sk- 开头的密钥",
+                            text: $apiKey,
+                            isSecure: true
                         )
 
                         Divider()
 
                         ClearableTextFieldRow(
-                            title: "API Key",
-                            placeholder: "填写以 sk- 开头的密钥",
-                            text: $apiKey,
-                            isSecure: true
+                            title: "代理地址",
+                            placeholder: "https://api.openai.com",
+                            text: $endpoint,
+                            showPasteButton: true
                         )
                     }
                 }
