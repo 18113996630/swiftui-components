@@ -32,7 +32,7 @@ public struct PillBadge: View {
         case .solid(let customColor):
             return customColor ?? themePalette.color
         case .neutral:
-            return Color(uiColor: .tertiarySystemFill)
+            return DesignSystem.Color.fillTertiary
         }
     }
 

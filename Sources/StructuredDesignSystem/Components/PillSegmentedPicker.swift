@@ -60,7 +60,7 @@ public struct PillSegmentedPicker<Selection: Hashable>: View {
             }
         }
         .padding(4)
-        .background(Color(uiColor: .tertiarySystemFill))
+        .background(DesignSystem.Color.fillTertiary)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.button + 4, style: .continuous))
     }
 }

@@ -47,7 +47,7 @@ public struct SFSymbolGridPicker: View {
                 }) {
                     ZStack {
                         RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.button, style: .continuous)
-                            .fill(isSelected ? effectiveTint.opacity(0.18) : Color(uiColor: .secondarySystemFill))
+                            .fill(isSelected ? effectiveTint.opacity(0.18) : DesignSystem.Color.fillSecondary)
 
                         if isSelected {
                             RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.button, style: .continuous)

@@ -36,7 +36,7 @@ public struct ConcentricColorCircle: View {
                         .frame(width: diameter, height: diameter)
 
                     Circle()
-                        .fill(Color(uiColor: .systemBackground))
+                        .fill(DesignSystem.Color.surfaceBackground)
                         .frame(width: max(0, diameter - 6), height: max(0, diameter - 6))
                 }
 

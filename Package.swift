@@ -4,7 +4,8 @@ import PackageDescription
 let package = Package(
     name: "StructuredDesignSystem",
     platforms: [
-        .iOS(.v18)
+        .iOS(.v18),
+        .macOS(.v14)
     ],
     products: [
         .library(
@@ -13,6 +14,10 @@ let package = Package(
         )
     ],
     targets: [
-        .target(name: "StructuredDesignSystem")
+        .target(name: "StructuredDesignSystem"),
+        .executableTarget(
+            name: "RenderPreviews",
+            dependencies: ["StructuredDesignSystem"]
+        )
     ]
 )

@@ -1,7 +1,25 @@
 import SwiftUI
 
-/// 设置与配置列表行（Structured 风格）
-/// 严格贴合 HIG 标准：微型彩色图标底座 + 标题/辅助解释副标题 + 泛型右侧控件插槽（Toggle、指示器、专业版徽标等）
+/// Structured 标杆风格设置与表单列表行
+///
+/// 贴合 HIG 标准：微型彩色图标底座 + 标题/辅助解释副标题 + 泛型右侧控件插槽（Toggle、指示器、专业版徽标等）。
+///
+/// ⚠️ 设计系统红线（Design Guardrails）：
+/// 1. 【主次对比度】：标题为 `headline` (Semibold)，副标题为 `caption` 并采用 `textSecondary`，满足 WCAG 4.5:1 基准；
+/// 2. 【卡片封装】：设置行应作为 `BaseCard` 内的列表项组织，多行之间使用 `.opacity(0.4)` 的 Divider 分割；
+/// 3. 【可点击反馈】：当传入 `action` 时，整行自动具备 Scale 与 Haptic 微触感反馈。
+///
+/// ```swift
+/// SettingsRow(
+///     icon: "bell.badge.fill",
+///     iconColor: .orange,
+///     title: "日程通知提醒",
+///     subtitle: "在事件发生前 15 分钟发送轻柔震动"
+/// ) {
+///     Toggle("", isOn: $enableNotifications)
+///         .labelsHidden()
+/// }
+/// ```
 public struct SettingsRow<TrailingContent: View>: View {
     private let icon: String?
     private let iconColor: Color

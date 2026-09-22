@@ -1,6 +1,22 @@
 import SwiftUI
 
-/// 基础浮岛卡片容器，统一连续曲率超椭圆、背景色、可选细微描边与漫反射软阴影（Structured 标杆风格）
+/// Structured 标杆风格浮岛卡片容器（内容保护仓）
+///
+/// 统一封装 28pt 连续曲率超椭圆、纯白卡片底座（#FFFFFF）与 24pt 漫反射软阴影。
+///
+/// ⚠️ 设计系统红线（Design Guardrails）：
+/// 1. 【文字入仓】：两行以上的正文说明、表单列表与交互控件必须置于 `BaseCard` 内，严禁裸露在冷灰底板上；
+/// 2. 【对比度标准】：卡片内正文使用 `DesignSystem.Typography.body`，副标题使用 `DesignSystem.Color.textSecondary`，严禁在此基础上叠加 `.opacity(...)`；
+/// 3. 【内边距约束】：默认注入 20pt 呼吸内边距，除特定边缘嵌合组件（如 HeroBanner）外严禁随意覆盖为 0。
+///
+/// ```swift
+/// BaseCard {
+///     VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
+///         Text("卡片主标题").font(DesignSystem.Typography.headline)
+///         Text("正文说明文案").font(DesignSystem.Typography.body).foregroundColor(DesignSystem.Color.textSecondary)
+///     }
+/// }
+/// ```
 public struct BaseCard<Content: View>: View {
     private let cornerRadius: CGFloat
     private let padding: CGFloat

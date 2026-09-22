@@ -53,7 +53,7 @@ public struct SelectableChip: View {
             .padding(.horizontal, 14)
             .padding(.vertical, 8)
             .background(
-                isSelected ? effectiveTint : Color(uiColor: .tertiarySystemFill)
+                isSelected ? effectiveTint : DesignSystem.Color.fillTertiary
             )
             .foregroundColor(
                 isSelected ? .white : DesignSystem.Color.textPrimary

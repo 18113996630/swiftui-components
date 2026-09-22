@@ -1,4 +1,9 @@
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 /// Structured 风格 9 大多巴胺活力主题色板
 public enum ThemePalette: String, CaseIterable, Identifiable, Sendable {
@@ -105,20 +110,44 @@ public enum DesignSystem {
         public static let primaryLight = defaultPalette.tint
         public static let proGradient = defaultPalette.gradient
 
+        #if canImport(UIKit)
         public static let background = SwiftUI.Color(uiColor: .systemGroupedBackground)
         public static let cardBackground = SwiftUI.Color(uiColor: .secondarySystemGroupedBackground)
+        public static let surfaceBackground = SwiftUI.Color(uiColor: .systemBackground)
+        public static let fillSecondary = SwiftUI.Color(uiColor: .secondarySystemFill)
+        public static let fillTertiary = SwiftUI.Color(uiColor: .tertiarySystemFill)
         public static let textPrimary = SwiftUI.Color.primary
-        public static let textSecondary = SwiftUI.Color.secondary.opacity(0.8)
+        public static let textSecondary = SwiftUI.Color.secondary
         public static let textTertiary = SwiftUI.Color(uiColor: .tertiaryLabel)
+        public static let textQuaternary = SwiftUI.Color(uiColor: .quaternaryLabel)
+        #elseif canImport(AppKit)
+        public static let background = SwiftUI.Color(nsColor: .windowBackgroundColor)
+        public static let cardBackground = SwiftUI.Color(nsColor: .controlBackgroundColor)
+        public static let surfaceBackground = SwiftUI.Color(nsColor: .underPageBackgroundColor)
+        public static let fillSecondary = SwiftUI.Color(nsColor: .quaternaryLabelColor)
+        public static let fillTertiary = SwiftUI.Color(nsColor: .separatorColor)
+        public static let textPrimary = SwiftUI.Color.primary
+        public static let textSecondary = SwiftUI.Color.secondary
+        public static let textTertiary = SwiftUI.Color(nsColor: .tertiaryLabelColor)
+        public static let textQuaternary = SwiftUI.Color(nsColor: .quaternaryLabelColor)
+        #endif
     }
 
     public enum Typography {
+        /// 页面主标题（对应 HIG Large Title / Title 1 强调级：28pt Bold）
         public static let largeTitle = Font.system(size: 28, weight: .bold, design: .rounded)
+        /// 模块与弹窗标题（对应 HIG Title 2/3：20pt Bold）
         public static let title = Font.system(size: 20, weight: .bold, design: .rounded)
+        /// 分组段落名、卡片首行、强调重点（对应 HIG Headline：17pt Semibold）
         public static let headline = Font.system(size: 17, weight: .semibold, design: .rounded)
-        public static let body = Font.system(size: 15, weight: .regular, design: .rounded)
+        /// 正文内容、表单正文（对应 HIG Body：16pt Regular，提升可读性与呼吸感）
+        public static let body = Font.system(size: 16, weight: .regular, design: .rounded)
+        /// 次级副标题、辅助列表项（对应 HIG Subhead：14pt Medium）
+        public static let subheadline = Font.system(size: 14, weight: .medium, design: .rounded)
+        /// 脚注、提示信息、标签微标（对应 HIG Footnote / Caption：13pt Medium）
         public static let caption = Font.system(size: 13, weight: .medium, design: .rounded)
-        public static let time = Font.system(size: 13, weight: .medium, design: .rounded)
+        /// 时间范围与数字专用（13pt Semibold Rounded，确保时间节点与数字清晰不发虚）
+        public static let time = Font.system(size: 13, weight: .semibold, design: .rounded)
     }
 
     public enum Spacing {

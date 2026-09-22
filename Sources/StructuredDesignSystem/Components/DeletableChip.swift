@@ -57,7 +57,7 @@ public struct DeletableChip: View {
         .padding(.leading, prefix != nil ? 10 : 12)
         .padding(.trailing, 4)
         .padding(.vertical, 4)
-        .background(Color(uiColor: .secondarySystemFill))
+        .background(DesignSystem.Color.fillSecondary)
         .clipShape(Capsule())
         .contentShape(Capsule())
     }

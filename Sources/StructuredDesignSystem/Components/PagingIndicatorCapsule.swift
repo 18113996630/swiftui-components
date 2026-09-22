@@ -58,7 +58,7 @@ public struct PagingIndicatorCapsule: View {
                     .foregroundColor(DesignSystem.Color.textSecondary)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
-                    .background(Color(uiColor: .tertiarySystemFill))
+                    .background(DesignSystem.Color.fillTertiary)
                     .clipShape(Capsule())
             }
         }

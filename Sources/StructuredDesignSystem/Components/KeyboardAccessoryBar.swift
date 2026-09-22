@@ -56,7 +56,7 @@ public struct KeyboardAccessoryBar: View {
                     .foregroundColor(DesignSystem.Color.textSecondary)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
-                    .background(Color(uiColor: .tertiarySystemFill))
+                    .background(DesignSystem.Color.fillTertiary)
                     .clipShape(Capsule())
             }
 

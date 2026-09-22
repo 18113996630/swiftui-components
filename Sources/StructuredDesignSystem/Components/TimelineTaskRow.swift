@@ -1,7 +1,24 @@
 import SwiftUI
 
-/// 标杆级时间线任务节点行（Structured 风格，支持 @Environment(\.themePalette)）
-/// 包含 38pt 饱满彩色节点、时长标签、任务详情与右侧极细打卡检查环
+/// Structured 标志性 38pt 饱满时间线任务节点行
+///
+/// 包含 38pt 饱满彩色圆形图标、时间跨度刻度、主副标题、分类微标与触觉打卡检查环。
+///
+/// ⚠️ 设计系统红线（Design Guardrails）：
+/// 1. 【时间排版】：时间刻度统一采用 `DesignSystem.Typography.time` (13pt Semibold Rounded)，确保数字清脆笃定；
+/// 2. 【多巴胺节点】：节点圆形背景强制采用饱满实心渐变或主色，配纯白图标，杜绝低饱和透明度混色发脏；
+/// 3. 【正向完成反馈】：打卡按钮完成态采用温和正向绿 + 触觉震动反馈，未完成态采用柔和中性轮廓。
+///
+/// ```swift
+/// TimelineTaskRow(
+///     time: "09:30",
+///     timeRange: "09:30 - 10:30 (1小时)",
+///     title: "核心系统架构设计",
+///     subtitle: "明确技术红线与容器边界",
+///     icon: "laptopcomputer",
+///     isCompleted: $taskCompleted
+/// )
+/// ```
 public struct TimelineTaskRow: View {
     @Environment(\.themePalette) private var themePalette
     private let time: String

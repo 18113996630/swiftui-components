@@ -639,7 +639,7 @@ public struct DesignSystemGalleryView: View {
     private func sectionTitle(_ title: String) -> some View {
         Text(title)
             .font(DesignSystem.Typography.headline)
-            .foregroundColor(DesignSystem.Color.textSecondary)
+            .foregroundColor(DesignSystem.Color.textPrimary)
             .padding(.leading, DesignSystem.Spacing.tiny)
     }
 
