@@ -68,28 +68,27 @@ let package = Package(
 
 > 💡 **核心建议**：AI 默认没有外部组件库的记忆，极易幻觉造轮子或使用原生生硬排版。在业务宿主工程中，请将以下规则内容保存为 `.cursorrules`、`AGENTS.md` 或直接粘贴给 AI。
 
-### 📋 可直接复制的 AI 提示词模板 (System Prompt / Agent Rules)
+### 📋 可直接复制的下游 AI 提示词模板 (System Prompt / Agent Rules)
 
 ```markdown
-# 业务工程 UI 开发规范：AuraDesignSystem 接入法则
+# 业务工程 UI 开发规范：AuraDesignSystem 消费法则
 
-你正在使用 `AuraDesignSystem` 组件库为本应用构建高质感、原生细腻的 SwiftUI 界面。你必须严格遵守以下设计系统与工程约束：
+你正在使用 `AuraDesignSystem` 组件库为本应用构建高质感、原生细腻的 SwiftUI 界面。作为业务调用方，你只需消费组件库提供的标准组件与设计规范，无需重复实现基础组件：
 
-## 1. 核心铁律（红线原则）
+## 1. 核心消费铁律
 - 【严禁自造轮子】：页面、卡片、设置行、输入框、按钮、分段选择器、徽标、弹窗等元素必须优先使用 `AuraDesignSystem` 已提供的标准组件，严禁手写粗糙的原生平替。
-- 【排版与对比度】：核心标题一律用 `DesignSystem.Color.textPrimary`；次级文字一律用 `DesignSystem.Color.textSecondary`，严禁二次叠加 `.opacity(...)` 发灰发虚。
+- 【排版与对比度】：核心标题一律用 `DesignSystem.Color.textPrimary`；次级文字一律用 `DesignSystem.Color.textSecondary`，严禁二次叠加 `.opacity(...)` 造成文字发灰发虚。
 - 【连续超椭圆】：所有圆角统一使用 `DesignSystem.CornerRadius` 并附带 `.continuous` 连续曲率样式。
-- 【多巴胺活力换肤】：颜色需支持 `@Environment(\.themePalette)`，页面不要硬编码不可换肤的纯色。
-- 【微交互手感】：所有可交互按钮必须附带 `.buttonStyle(ScaleButtonStyle())`，触感调用 `HapticManager.shared.impact(...)`。
-- 【全域国际化】：
-  - 静态文案传字面量（触发 Xcode String Catalog 自动静态提取）；
-  - 运行时动态数据（如用户名、网络数据）必须使用 `verbatim: String` 初始化器；
-  - 绝不在组件或页面写死未经本地化的写死中文/英文业务词汇。
+- 【多巴胺主题联动】：高光与强调色使用 `@Environment(\.themePalette)`，严禁硬编码固定颜色（如 `.foregroundColor(.blue)`）。
+- 【微交互手感】：所有可交互按钮必须附带 `.buttonStyle(ScaleButtonStyle())`，触感统一调用 `HapticManager.shared.impact(...)`。
+- 【业务文案传参分流】：
+  - 界面静态文案（如标题、说明、按钮文案）：直接传未具名字符串字面量（Xcode String Catalog 会自动抓取）；
+  - 运行时动态数据（如用户名、API 返回文本）：必须使用 `verbatim: String` 初始化器传参，防编译报错与误索引。
 
-## 2. 页面搭建三层骨架
-任何标准内容或表单页面必须按照此层级构建：
+## 2. 页面搭建三层黄金架构
+任何业务或表单页面必须按照以下骨架标准组装：
 AuraScaffold (全屏外框，自动提供 16pt 外边距与 24pt 段落流)
-  └── AuraSection (段落标头，集成 SF 图标与状态徽标)
+  └── AuraSection (段落标头，集成 SF 图标底座与状态徽标)
         └── BaseCard (纯白浮岛高质感卡片容器)
               └── 行组件 (SettingsRow / ChecklistRow / TimelineTaskRow / ClearableTextFieldRow 等)
 ```
@@ -277,10 +276,10 @@ AuraSection(verbatim: dynamicUserName, icon: "person.text.rectangle") {
 }
 ```
 
-### 3. 状态表达一律采用纯图标 / 微动效
-组件库坚持**零内置写死文案**哲学：
-- “加载中”、“生成中”：使用 SF Symbol 或呼吸动效（如 `TypewriterStreamingCard` 内置的指示灯），避免在组件内部硬编码中英文；
-- 状态按键：优先使用 `Image(systemName: "stop.fill")` 或 `Image(systemName: "keyboard.chevron.compact.down")`。
+### 3. 零内置文案的消费优势（无需处理状态文字本地化）
+`AuraDesignSystem` 内部已全面实现**零硬编码文案与状态图标化闭环**（例如：`TypewriterStreamingCard` 的流式生成状态内置为纯视觉呼吸动效指示灯，键盘辅助栏收起按钮默认为原生 SF 图标）：
+- **业务消费方完全无需操心组件内部状态词的翻译与多语言配置**；
+- 若业务层有特定的徽标（如 `"PRO"`、`"NEW"`）或特定提示词，只需通过对应参数显式传入即可，组件库不会强行捆绑任何预置文案。
 
 ---
 
