@@ -30,6 +30,14 @@ import SwiftUI
 ///     title: "settings_dnd_title",
 ///     isOn: $isDndEnabled
 /// )
+///
+/// // 3. 本地化标题 + 运行时动态非本地化副标题（避免 String Catalog 静态提取歧义）
+/// SettingsRow(
+///     icon: "server.rack",
+///     iconColor: .blue,
+///     title: "settings_cache_title",
+///     verbatimSubtitle: "\(cachedCount) 项已缓存"
+/// )
 /// ```
 public struct SettingsRow<TrailingContent: View>: View {
     private let icon: String?
@@ -66,6 +74,35 @@ public struct SettingsRow<TrailingContent: View>: View {
         @ViewBuilder trailing: () -> TrailingContent
     ) {
         self.init(icon: icon, iconColor: iconColor, title, subtitle: subtitle, action: action, trailing: trailing)
+    }
+
+    /// 混合直出初始化器：本地化标题 + 动态非本地化副标题（避免 String Catalog 动态统计提取歧义）
+    public init(
+        icon: String? = nil,
+        iconColor: Color = DesignSystem.Color.primary,
+        _ title: LocalizedStringKey,
+        verbatimSubtitle: String?,
+        action: (() -> Void)? = nil,
+        @ViewBuilder trailing: () -> TrailingContent
+    ) {
+        self.icon = icon
+        self.iconColor = iconColor
+        self.title = .localized(title)
+        self.subtitle = verbatimSubtitle.map { .verbatim($0) }
+        self.action = action
+        self.trailing = trailing()
+    }
+
+    /// 具名混合直出初始化器：本地化标题 + 动态非本地化副标题
+    public init(
+        icon: String? = nil,
+        iconColor: Color = DesignSystem.Color.primary,
+        title: LocalizedStringKey,
+        verbatimSubtitle: String?,
+        action: (() -> Void)? = nil,
+        @ViewBuilder trailing: () -> TrailingContent
+    ) {
+        self.init(icon: icon, iconColor: iconColor, title, verbatimSubtitle: verbatimSubtitle, action: action, trailing: trailing)
     }
 
     /// 动态非本地化直出初始化器
@@ -193,6 +230,105 @@ public extension SettingsRow where TrailingContent == AnyView {
         )
     }
 
+    /// 混合初始化器（Apple 原生风格）：本地化标题 + 动态非本地化副标题
+    init(
+        icon: String? = nil,
+        iconColor: Color = DesignSystem.Color.primary,
+        _ title: LocalizedStringKey,
+        verbatimSubtitle: String?,
+        badgeText: LocalizedStringKey? = nil,
+        action: (() -> Void)? = nil
+    ) {
+        let localizedBadge = badgeText.map { LocalizedText.localized($0) }
+        self.init(
+            icon: icon,
+            iconColor: iconColor,
+            title,
+            verbatimSubtitle: verbatimSubtitle,
+            action: action
+        ) {
+            AnyView(
+                Group {
+                    if let localizedBadge {
+                        localizedBadge.makeText()
+                            .font(.system(size: 10, weight: .bold, design: .rounded))
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(iconColor.opacity(0.12))
+                            .foregroundColor(iconColor)
+                            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small, style: .continuous))
+                    } else if action != nil {
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(DesignSystem.Color.textTertiary)
+                    } else {
+                        EmptyView()
+                    }
+                }
+            )
+        }
+    }
+
+    /// 具名混合初始化器：本地化标题 + 动态非本地化副标题
+    init(
+        icon: String? = nil,
+        iconColor: Color = DesignSystem.Color.primary,
+        title: LocalizedStringKey,
+        verbatimSubtitle: String?,
+        badgeText: LocalizedStringKey? = nil,
+        action: (() -> Void)? = nil
+    ) {
+        self.init(
+            icon: icon,
+            iconColor: iconColor,
+            title,
+            verbatimSubtitle: verbatimSubtitle,
+            badgeText: badgeText,
+            action: action
+        )
+    }
+
+    /// 混合初始化器：本地化标题 + 动态非本地化副标题 + 动态非本地化微标
+    init(
+        icon: String? = nil,
+        iconColor: Color = DesignSystem.Color.primary,
+        title: LocalizedStringKey,
+        verbatimSubtitle: String?,
+        verbatimBadgeText: String?,
+        action: (() -> Void)? = nil
+    ) {
+        let verbatimBadge = verbatimBadgeText.map { LocalizedText.verbatim($0) }
+        self.init(
+            icon: icon,
+            iconColor: iconColor,
+            title,
+            verbatimSubtitle: verbatimSubtitle,
+            action: action
+        ) {
+            AnyView(
+                Group {
+                    if let verbatimBadge {
+                        verbatimBadge.makeText()
+                            .font(.system(size: 10, weight: .bold, design: .rounded))
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(iconColor.opacity(0.12))
+                            .foregroundColor(iconColor)
+                            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small, style: .continuous))
+                    } else if action != nil {
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(DesignSystem.Color.textTertiary)
+                    } else {
+                        EmptyView()
+                    }
+                }
+            )
+        }
+    }
+
     /// 动态非本地化直出初始化器
     init(
         verbatim title: String,
@@ -284,6 +420,39 @@ public extension SettingsRow where TrailingContent == AnyView {
         isOn: Binding<Bool>
     ) -> SettingsRow<AnyView> {
         toggle(icon: icon, iconColor: iconColor, title, subtitle: subtitle, isOn: isOn)
+    }
+
+    /// 开关切换配置行 (Toggle - LocalizedStringKey + Verbatim Subtitle)
+    static func toggle(
+        icon: String? = nil,
+        iconColor: Color = DesignSystem.Color.primary,
+        _ title: LocalizedStringKey,
+        verbatimSubtitle: String?,
+        isOn: Binding<Bool>
+    ) -> SettingsRow<AnyView> {
+        SettingsRow<AnyView>(
+            icon: icon,
+            iconColor: iconColor,
+            title,
+            verbatimSubtitle: verbatimSubtitle,
+            action: nil
+        ) {
+            AnyView(
+                Toggle(isOn: isOn) { EmptyView() }
+                    .labelsHidden()
+            )
+        }
+    }
+
+    /// 开关切换配置行 (Toggle - 具名 LocalizedStringKey + Verbatim Subtitle)
+    static func toggle(
+        icon: String? = nil,
+        iconColor: Color = DesignSystem.Color.primary,
+        title: LocalizedStringKey,
+        verbatimSubtitle: String?,
+        isOn: Binding<Bool>
+    ) -> SettingsRow<AnyView> {
+        toggle(icon: icon, iconColor: iconColor, title, verbatimSubtitle: verbatimSubtitle, isOn: isOn)
     }
 
     /// 开关切换配置行 (Toggle - Verbatim String)

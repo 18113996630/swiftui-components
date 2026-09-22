@@ -11,10 +11,14 @@ import SwiftUI
 /// 3. 【无二次透明稀释】：胶囊文本使用标准 `textPrimary`，在毛玻璃材质上保持高对比度。
 ///
 /// ```swift
-/// // 1. 本地化字面量（Xcode 自动提取）
+/// // 1. 本地化字面量（Xcode 自动提取，Bool 驱动）
 /// .toastHUD(isPresented: $showToast, "toast_saved_success")
 ///
-/// // 2. 动态非本地化直出
+/// // 2. 可选值驱动（自动延时置空，LocalizedStringKey? / String?）
+/// .toastHUD(message: $toastMessage)
+/// .toastHUD(message: toastMessage, icon: "sparkles")
+///
+/// // 3. 动态非本地化直出
 /// .toastHUD(isPresented: $showToast, verbatim: "Updated \(item.name)")
 /// ```
 public struct ToastHUD: View {
@@ -161,6 +165,211 @@ public extension View {
         }
         .animation(.spring(response: 0.32, dampingFraction: 0.76), value: isPresented.wrappedValue)
     }
+
+    /// 为任意视图挂载可选值驱动的 Toast 浮窗轻提示（本地化支持，自动复位为 nil）
+    func toastHUD(
+        message: Binding<LocalizedStringKey?>,
+        icon: String = "checkmark.circle.fill",
+        iconColor: Color? = nil,
+        duration: Double = 2.0
+    ) -> some View {
+        ZStack {
+            self
+
+            if let currentMessage = message.wrappedValue {
+                VStack {
+                    ToastHUD(message: currentMessage, icon: icon, iconColor: iconColor)
+                        .transition(.move(edge: .top).combined(with: .opacity).combined(with: .scale(scale: 0.95)))
+                        .padding(.top, 16)
+                    Spacer()
+                }
+                .zIndex(999)
+                .onAppear {
+                    HapticManager.notification(.success)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                            message.wrappedValue = nil
+                        }
+                    }
+                }
+            }
+        }
+        .animation(.spring(response: 0.32, dampingFraction: 0.76), value: message.wrappedValue != nil)
+    }
+
+    /// 为任意视图挂载可选值驱动的 Toast 浮窗轻提示（动态非本地化 Verbatim 支持，自动复位为 nil）
+    func toastHUD(
+        verbatimMessage message: Binding<String?>,
+        icon: String = "checkmark.circle.fill",
+        iconColor: Color? = nil,
+        duration: Double = 2.0
+    ) -> some View {
+        ZStack {
+            self
+
+            if let currentMessage = message.wrappedValue {
+                VStack {
+                    ToastHUD(verbatim: currentMessage, icon: icon, iconColor: iconColor)
+                        .transition(.move(edge: .top).combined(with: .opacity).combined(with: .scale(scale: 0.95)))
+                        .padding(.top, 16)
+                    Spacer()
+                }
+                .zIndex(999)
+                .onAppear {
+                    HapticManager.notification(.success)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                            message.wrappedValue = nil
+                        }
+                    }
+                }
+            }
+        }
+        .animation(.spring(response: 0.32, dampingFraction: 0.76), value: message.wrappedValue != nil)
+    }
+
+    /// 为任意视图挂载可选字面量驱动的 Toast 浮窗轻提示（直传 LocalizedStringKey?，用于单向响应）
+    func toastHUD(
+        message: LocalizedStringKey?,
+        icon: String? = nil,
+        iconColor: Color? = nil,
+        duration: Double = 2.0,
+        onDismiss: (() -> Void)? = nil
+    ) -> some View {
+        modifier(
+            ToastHUDValueModifier(
+                message: message,
+                icon: icon ?? "checkmark.circle.fill",
+                iconColor: iconColor,
+                duration: duration,
+                onDismiss: onDismiss
+            )
+        )
+    }
+
+    /// 为任意视图挂载可选字面量驱动的 Toast 浮窗轻提示（直传 String? Verbatim，用于单向响应）
+    func toastHUD(
+        verbatimMessage message: String?,
+        icon: String? = nil,
+        iconColor: Color? = nil,
+        duration: Double = 2.0,
+        onDismiss: (() -> Void)? = nil
+    ) -> some View {
+        modifier(
+            ToastHUDVerbatimValueModifier(
+                message: message,
+                icon: icon ?? "checkmark.circle.fill",
+                iconColor: iconColor,
+                duration: duration,
+                onDismiss: onDismiss
+            )
+        )
+    }
+}
+
+// MARK: - 单向可选值 ViewModifier 实现
+private struct ToastHUDValueModifier: ViewModifier {
+    let message: LocalizedStringKey?
+    let icon: String
+    let iconColor: Color?
+    let duration: Double
+    let onDismiss: (() -> Void)?
+
+    @State private var isVisible: Bool = false
+
+    func body(content: Content) -> some View {
+        ZStack {
+            content
+
+            if isVisible, let message {
+                VStack {
+                    ToastHUD(message: message, icon: icon, iconColor: iconColor)
+                        .transition(.move(edge: .top).combined(with: .opacity).combined(with: .scale(scale: 0.95)))
+                        .padding(.top, 16)
+                    Spacer()
+                }
+                .zIndex(999)
+                .onAppear {
+                    HapticManager.notification(.success)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                            isVisible = false
+                            onDismiss?()
+                        }
+                    }
+                }
+            }
+        }
+        .onAppear {
+            if message != nil {
+                isVisible = true
+            }
+        }
+        .onChange(of: message != nil) { _, hasMessage in
+            if hasMessage {
+                withAnimation(.spring(response: 0.32, dampingFraction: 0.76)) {
+                    isVisible = true
+                }
+            } else {
+                withAnimation(.spring(response: 0.32, dampingFraction: 0.76)) {
+                    isVisible = false
+                }
+            }
+        }
+        .animation(.spring(response: 0.32, dampingFraction: 0.76), value: isVisible)
+    }
+}
+
+private struct ToastHUDVerbatimValueModifier: ViewModifier {
+    let message: String?
+    let icon: String
+    let iconColor: Color?
+    let duration: Double
+    let onDismiss: (() -> Void)?
+
+    @State private var isVisible: Bool = false
+
+    func body(content: Content) -> some View {
+        ZStack {
+            content
+
+            if isVisible, let message {
+                VStack {
+                    ToastHUD(verbatim: message, icon: icon, iconColor: iconColor)
+                        .transition(.move(edge: .top).combined(with: .opacity).combined(with: .scale(scale: 0.95)))
+                        .padding(.top, 16)
+                    Spacer()
+                }
+                .zIndex(999)
+                .onAppear {
+                    HapticManager.notification(.success)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                            isVisible = false
+                            onDismiss?()
+                        }
+                    }
+                }
+            }
+        }
+        .onAppear {
+            if message != nil {
+                isVisible = true
+            }
+        }
+        .onChange(of: message != nil) { _, hasMessage in
+            if hasMessage {
+                withAnimation(.spring(response: 0.32, dampingFraction: 0.76)) {
+                    isVisible = true
+                }
+            } else {
+                withAnimation(.spring(response: 0.32, dampingFraction: 0.76)) {
+                    isVisible = false
+                }
+            }
+        }
+        .animation(.spring(response: 0.32, dampingFraction: 0.76), value: isVisible)
+    }
 }
 
 #Preview("ToastHUD Preview") {
@@ -169,13 +378,14 @@ public extension View {
 
 private struct ToastHUDPreviewHelper: View {
     @State private var showToast = false
+    @State private var dynamicMessage: LocalizedStringKey? = nil
 
     var body: some View {
         ZStack {
             DesignSystem.Color.background.ignoresSafeArea()
 
             VStack(spacing: DesignSystem.Spacing.large) {
-                Button("触发 Toast 轻提示") {
+                Button("触发 Bool Toast") {
                     showToast = true
                 }
                 .buttonStyle(.scale)
@@ -183,9 +393,20 @@ private struct ToastHUDPreviewHelper: View {
                 .background(ThemePalette.berry.color)
                 .foregroundColor(.white)
                 .clipShape(Capsule())
+
+                Button("触发可选值驱动 Toast (Binding)") {
+                    dynamicMessage = "动态提示：操作已完成"
+                }
+                .buttonStyle(.scale)
+                .padding()
+                .background(ThemePalette.indigo.color)
+                .foregroundColor(.white)
+                .clipShape(Capsule())
             }
         }
         .toastHUD(isPresented: $showToast, "文稿已成功存入爆款智库")
+        .toastHUD(message: $dynamicMessage, icon: "sparkles")
         .themePalette(.berry)
     }
 }
+

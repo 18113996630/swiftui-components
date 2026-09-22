@@ -70,62 +70,79 @@ struct DeviceFrameContainer<Content: View>: View {
 struct RenderPreviewsApp {
     @MainActor
     static func main() {
-        let outputDir = "/Users/huangrong/.antigravity-profile2/.gemini/antigravity/brain/56110305-ea62-42fe-a1b2-eb1e55539e97"
+        let outputDir = "/Users/huangrong/.antigravity-profile2/.gemini/antigravity/brain/04ad9f6f-977f-4c9a-93dc-5a9643dd4326"
 
-        print("Rendering Typography Specimen - Light...")
+        print("Rendering AI Settings Specimen (Refined) - Light...")
         render(
             view: DeviceFrameContainer(colorScheme: .light) {
-                TypographyShowcaseView()
+                AISettingsSpecimenView()
+                    .themePalette(.indigo)
             },
-            outputPath: "\(outputDir)/typography_specimen_light.png"
+            outputPath: "\(outputDir)/ai_settings_refined.png"
         )
 
-        print("Rendering Typography Specimen - Dark...")
-        render(
-            view: DeviceFrameContainer(colorScheme: .dark) {
-                TypographyShowcaseView()
-            },
-            outputPath: "\(outputDir)/typography_specimen_dark.png"
-        )
-
-        print("Rendering Gallery View (Refreshed) - Light...")
+        print("Rendering AI Settings Specimen (Before) - Light...")
         render(
             view: DeviceFrameContainer(colorScheme: .light) {
-                DesignSystemGalleryView()
+                AIBuggyOriginalSpecimenView()
             },
-            outputPath: "\(outputDir)/gallery_refreshed_light.png"
+            outputPath: "\(outputDir)/ai_settings_before.png"
         )
 
-        print("Rendering Gallery View (Refreshed) - Dark...")
+        print("Rendering AI Settings Specimen - Dark...")
         render(
             view: DeviceFrameContainer(colorScheme: .dark) {
-                DesignSystemGalleryView()
+                AISettingsSpecimenView()
+                    .themePalette(.indigo)
             },
-            outputPath: "\(outputDir)/gallery_refreshed_dark.png"
+            outputPath: "\(outputDir)/ai_settings_dark.png"
         )
 
-        print("Rendering Scaffold Showcase - Light...")
+        print("Rendering Side-by-Side Comparison...")
         render(
-            view: DeviceFrameContainer(colorScheme: .light) {
-                ScaffoldShowcaseView()
-            },
-            outputPath: "\(outputDir)/scaffold_showcase_light.png"
-        )
+            view: HStack(spacing: 24) {
+                VStack(spacing: 8) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.red)
+                        Text("原版设计（锯齿错位 · 图标噪音 · 折行截断）")
+                            .font(.system(size: 15, weight: .bold, design: .rounded))
+                            .foregroundColor(.primary)
+                    }
+                    .padding(.top, 12)
 
-        print("Rendering Scaffold Showcase - Dark...")
-        render(
-            view: DeviceFrameContainer(colorScheme: .dark) {
-                ScaffoldShowcaseView()
-            },
-            outputPath: "\(outputDir)/scaffold_showcase_dark.png"
+                    DeviceFrameContainer(colorScheme: .light) {
+                        AIBuggyOriginalSpecimenView()
+                    }
+                }
+
+                VStack(spacing: 8) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "checkmark.seal.fill")
+                            .foregroundColor(.indigo)
+                        Text("标杆重构（平整对齐 · 纯净骨架 · 精致单行）")
+                            .font(.system(size: 15, weight: .bold, design: .rounded))
+                            .foregroundColor(.primary)
+                    }
+                    .padding(.top, 12)
+
+                    DeviceFrameContainer(colorScheme: .light) {
+                        AISettingsSpecimenView()
+                            .themePalette(.indigo)
+                    }
+                }
+            }
+            .padding(20)
+            .background(Color(red: 0.93, green: 0.93, blue: 0.95)),
+            frameSize: CGSize(width: 910, height: 950),
+            outputPath: "\(outputDir)/ai_settings_comparison.png"
         )
 
         print("All previews rendered successfully!")
     }
 
     @MainActor
-    static func render<V: View>(view: V, outputPath: String) {
-        let frameSize = CGSize(width: 421, height: 880)
+    static func render<V: View>(view: V, frameSize: CGSize = CGSize(width: 421, height: 880), outputPath: String) {
         let hostingView = NSHostingView(rootView: view)
         hostingView.frame = CGRect(origin: .zero, size: frameSize)
 

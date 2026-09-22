@@ -45,6 +45,7 @@ Sources/AuraDesignSystem/
 │   ├── HIGSectionHeaderView.swift  # 表单与分组标准头部视图 (带图标底座与微标)
 │   ├── SettingsRow.swift           # 标准表单行 (支持泛型 trailing、Toggle、通用 badgeText)
 │   ├── ClearableTextFieldRow.swift # 卡片式带清空与快捷粘贴输入行
+│   ├── ClearableSecureFieldRow.swift # 卡片式密文输入行 (带一键清空与明密文显隐切换)
 │   ├── FormRowActionButton.swift  # 表单居中功能与危险操作按钮
 │   ├── KeyboardAccessoryBar.swift  # 键盘快捷辅助工具栏 (通用计数与收起键盘)
 │   ├── ToastHUD.swift              # 毛玻璃悬浮轻提示与 .toastHUD(...) 修饰符
@@ -58,7 +59,9 @@ Sources/AuraDesignSystem/
 │   └── HeroBannerSheet.swift       # 沉浸式彩色顶栏模态卡片
 └── Previews/
     ├── DesignSystemGalleryView.swift # 全景交互式组件展厅 (包含全量组件与即时换肤)
+    ├── UpstreamBacklogShowcaseView.swift # 回补组件专项展示 (密文输入、动态统计副标与可选值 HUD)
     ├── TypographyShowcaseView.swift   # 排版字阶与 WCAG 4.5:1 对比度规范专项展示
+    ├── AISettingsSpecimenView.swift   # 标杆级表单与设置排版重构视图 (对齐基准、单行微标与原生导航)
     └── ScaffoldShowcaseView.swift     # 标杆级页面脚手架与段落容器全景展示
 ```
 

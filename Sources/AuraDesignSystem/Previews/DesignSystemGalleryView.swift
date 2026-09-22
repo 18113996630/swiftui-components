@@ -44,6 +44,7 @@ public struct DesignSystemGalleryView: View {
     @State private var inputKey = "sk-test-example-key"
     @State private var inputEndpoint = ""
     @State private var showToast = false
+    @State private var dynamicToastMessage: LocalizedStringKey? = nil
 
     @State private var isStreamingGenerating = true
     @State private var streamingText = "正在基于 Aura 范式生成黄金 3 秒开场白：\n“90% 的创作者都做错了第一步，真正的高完播率其实藏在这三个细节里……”"
@@ -73,6 +74,7 @@ public struct DesignSystemGalleryView: View {
         .background(DesignSystem.Color.background.ignoresSafeArea())
         .themePalette(currentTheme)
         .toastHUD(isPresented: $showToast, message: "文稿已成功存入爆款智库", iconColor: currentTheme.color)
+        .toastHUD(message: $dynamicToastMessage, icon: "bolt.badge.checkmark.fill", iconColor: currentTheme.color)
     }
 
     // MARK: - 01 顶部 Hero Header
@@ -451,11 +453,12 @@ public struct DesignSystemGalleryView: View {
 
                     Divider()
 
-                    ClearableTextFieldRow(
+                    ClearableSecureFieldRow(
                         title: "密钥 Key",
                         placeholder: "填写以 sk- 开头的密钥",
                         text: $inputKey,
-                        isSecure: true
+                        allowReveal: true,
+                        showPasteButton: true
                     )
 
                     Divider()
@@ -465,7 +468,7 @@ public struct DesignSystemGalleryView: View {
                         icon: "bolt.horizontal.fill",
                         role: .regular
                     ) {
-                        showToast = true
+                        dynamicToastMessage = "AI 服务连通性测试通过（可选值驱动）"
                     }
                 }
             }
@@ -610,8 +613,17 @@ public struct DesignSystemGalleryView: View {
                     icon: "sparkles",
                     iconColor: currentTheme.color,
                     title: "AI 实时润色辅助",
-                    subtitle: "录制过程中自动高亮关键词",
+                    verbatimSubtitle: isPushToggleOn ? "2 项智能辅助规则生效中" : "未开启",
                     isOn: $isPushToggleOn
+                )
+
+                Divider().padding(.leading, 56)
+
+                SettingsRow(
+                    icon: "server.rack",
+                    iconColor: ThemePalette.teal.color,
+                    title: "本地智能缓存",
+                    verbatimSubtitle: "已占用 128.4 MB (32 项)"
                 )
 
                 Divider().padding(.leading, 56)
