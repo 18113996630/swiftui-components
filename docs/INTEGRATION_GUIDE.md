@@ -79,10 +79,10 @@ let package = Package(
 
 ## 1. 动态查阅最新规范（单一真实源）
 在编写、重构或设计任何 UI 界面之前，你必须优先读取本地 SPM 已检出的组件库权威文档：
-- 本地路径 1（SPM CLI 工程）：`.build/checkouts/swiftui-components/docs/AI_INTEGRATION_GUIDE.md`
-- 本地路径 2（Xcode 现代工程）：`SourcePackages/checkouts/swiftui-components/docs/AI_INTEGRATION_GUIDE.md`
-- 若找不到上述路径，请使用文件查找工具检索 `AI_INTEGRATION_GUIDE.md`，或在线查阅：
-  `https://raw.githubusercontent.com/18113996630/swiftui-components/main/docs/AI_INTEGRATION_GUIDE.md`
+- 本地路径 1（SPM CLI 工程）：`.build/checkouts/swiftui-components/docs/INTEGRATION_GUIDE.md`
+- 本地路径 2（Xcode 现代工程）：`SourcePackages/checkouts/swiftui-components/docs/INTEGRATION_GUIDE.md`
+- 若找不到上述路径，请使用文件查找工具检索 `INTEGRATION_GUIDE.md`，或在线查阅：
+  `https://raw.githubusercontent.com/18113996630/swiftui-components/main/docs/INTEGRATION_GUIDE.md`
 **查阅文档中的「组件速查表」匹配现有官方组件，严禁自造轮子。**
 
 ## 2. 页面搭建三层黄金架构

@@ -4,9 +4,9 @@
 
 ---
 
-## 🚨 核心铁律：双重同步机制（Dual Synchronization Protocol）
+## 🚨 核心铁律：单一真实源同步机制 (SSOT Synchronization Protocol)
 
-> **红线原则 1（外部文档与 AI 知识源同步）**：**只要增加、删除、修改了任何 UI 组件、设计令牌或公开 API，必须在同一任务流程中同步更新 `README.md` 与 `docs/AI_INTEGRATION_GUIDE.md`（包含组件能力速查表与调用示例）。下游业务工程的 AI 依赖本地检出目录进行自省，严禁出现外部文档与实际用法脱节的情况。**
+> **红线原则 1（权威知识源 SSOT 同步）**：**`docs/INTEGRATION_GUIDE.md` 是全量组件能力、调用示例与速查字典的唯一真实源（Single Source of Truth）。凡是增加、修改、重构了任何组件或公开 API，必须在同一任务中同步更新该文档。修改普通组件时仅需在此处闭环，`README.md` 仅作为宏观门面，无需同步细分组件调用。**
 >
 > **红线原则 2（源码注释同步）**：**只要增加、修改或重构了任何 UI 组件或公开 API，必须在同一任务流程中同步更新组件源码上方的 Swift DocComments（`///`），必须包含组件核心定位、⚠️ 设计系统红线（Design Guardrails）与最小可用示例代码块（```swift），严禁源码注释与代码实际行为脱节，确保下游消费系统与 AI 助手通过 LSP 能够获取精确的用法与设计约束。**
 
@@ -16,16 +16,17 @@
 
 ### 1. 新增组件（New Component）
 - [ ] **源码 DocComments 注入**：新增组件必须配备结构化 `///` 注释，包含一句话职责定位、`⚠️ 设计系统红线（Design Guardrails）` 与包含标准调用方式的 `/// ```swift` 代码示例。
-- [ ] **目录树与 AI 指南同步**：在 `README.md` 目录树中补全新增的 Swift 文件路径与核心定位；同时在 `docs/AI_INTEGRATION_GUIDE.md` 的「组件能力速查字典」表格中补齐分类、组件名、职责与最小调用代码。
+- [ ] **速查字典同步 (SSOT)**：在 `docs/INTEGRATION_GUIDE.md` 的「组件能力速查字典」表格中补齐分类、组件名、职责与最小调用代码。
+- [ ] **目录树同步**：在 `README.md` 目录树中补全新增的 Swift 文件路径与核心定位。
 - [ ] **展厅接入**：将新组件接入 [`DesignSystemGalleryView.swift`](Sources/AuraDesignSystem/Previews/DesignSystemGalleryView.swift) 或配套的专项 Specimen 视图中，确保有直观的交互预览。
 
 ### 2. 修改组件（Modify Component）
 - [ ] **源码 DocComments 修正**：同步更新类型与初始化器上方的 `///` 注释，确保参数描述、`⚠️ 设计系统红线` 与 `/// ```swift` 代码示例与最新代码完全一致。
-- [ ] **API 示例与速查表核验**：若修改了组件的初始化器参数（`init`）、样式枚举（如 `.subtle` / `.solid`）、环境键或关键修饰符，必须同步更新 `README.md` 和 `docs/AI_INTEGRATION_GUIDE.md` 中引用的调用示例。
-- [ ] **破坏性变更提示**：若调整了默认参数或废弃了旧属性，必须在文档中明确更新后的调用方式，避免外部消费项目编译失败。
+- [ ] **速查字典核验 (SSOT)**：若修改了组件的初始化器参数（`init`）、样式枚举或关键修饰符，**只需同步更新 `docs/INTEGRATION_GUIDE.md`** 中的速查表与调用示例，`README.md` 无需变动。
+- [ ] **破坏性变更提示**：若调整了默认参数或废弃了旧属性，必须在 `docs/INTEGRATION_GUIDE.md` 中明确更新后的调用方式，避免外部消费项目编译失败。
 
 ### 3. 删除/重命名组件（Delete / Rename Component）
-- [ ] **目录树与速查表剔除**：立即从 `README.md` 目录树与 `docs/AI_INTEGRATION_GUIDE.md` 组件表中移除或更名对应组件，严禁遗留失效的组件声明。
+- [ ] **速查字典与目录树剔除**：立即从 `docs/INTEGRATION_GUIDE.md` 组件表中移除或更名对应组件；若涉及文件名变动，同步更新 `README.md` 目录树。
 - [ ] **清理陈旧引用**：清理文档中所有提及该组件的代码片段与描述文本。
 
 ### 4. 设计令牌变更（Design Tokens Update）

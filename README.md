@@ -15,7 +15,7 @@
 
 ```text
 docs/
-└── AI_INTEGRATION_GUIDE.md        # AI 助手在外部业务工程接入本组件库的完整工作流与防翻车指南
+└── INTEGRATION_GUIDE.md           # 组件库接入与协同规范全流程指南 (单一真实源 SSOT)
 
 Sources/AuraDesignSystem/
 ├── DesignSystem.swift              # 主题调色盘、颜色、字体、间距、圆角、漫反射阴影令牌
@@ -82,18 +82,12 @@ import SwiftUI
 import AuraDesignSystem
 ```
 
-### 2. 🤖 让 AI 助手接入业务工程 (AI-Driven Integration Guide)
+### 2. 🤖 让 AI 助手接入业务工程 (Integration Guide)
 
-若你需要通过 **AI 编程助手**（如 Antigravity、Claude Code、Cursor、Windsurf 等）在其他业务项目中无缝接入并消费本组件库，请参阅：
-👉 **[AI 接入与协同规范全流程指南 (`docs/AI_INTEGRATION_GUIDE.md`)](docs/AI_INTEGRATION_GUIDE.md)**
+若你需要通过 **AI 编程助手**（如 Antigravity、Claude Code、Cursor、Windsurf 等）在其他业务项目中无缝接入并消费本组件库，请直接参阅：
+👉 **[组件库接入与协同规范全流程指南 (`docs/INTEGRATION_GUIDE.md`)](docs/INTEGRATION_GUIDE.md)**
 
-> 💡 **免维护机制**：本组件库推荐采用 **SPM 本地包自省模式（Local Package Inspection）**。业务工程的 `AGENTS.md` 无需复制粘贴组件清单，只需配置 10 行动态指针，让 AI 直接读取本地 SPM 检出的 `AI_INTEGRATION_GUIDE.md`。组件库升级时文档随包自动对齐，**100% 杜绝文档过时与版本错配**。
-
-该指南提供：
-- 极简下游 AI 动态指针模板（直接复制至业务工程 `.cursorrules` / `AGENTS.md`）
-- 官方全量组件能力速查全景字典（防止 AI 幻觉与重复自造轮子）
-- 国际化双通道分流规范（`LocalizedStringKey` 自动提取 vs `verbatim:` 直出）
-- 常见翻车反模式与标准修复对照（Bad vs Good）
+> 💡 **单一真实源（SSOT）与免维护机制**：本组件库所有全量组件速查字典、参数说明与防翻车守则**全在 `docs/INTEGRATION_GUIDE.md` 闭环维护**。下游工程采用 **SPM 本地包自省模式**，只需在业务工程的 `AGENTS.md` 配置 10 行动态指针即可，组件库升级时文档随包自动对齐，**100% 杜绝文档过时与版本错配**。
 
 ### 3. 标杆级页面搭建范式 (Scaffold & Section)
 
@@ -126,51 +120,16 @@ struct MyScheduleView: View {
 }
 ```
 
-### 国际化最佳实践 (String Catalog 自动抓取与 Verbatim 直出)
+### 4. 国际化与零内置文案规范 (i18n & Zero Copy)
 
 组件库遵循 Apple 原生 SwiftUI 签名设计，对所有包含文本的组件提供 `LocalizedStringKey` 与 `verbatim: String` 双通道：
 
-#### 1. 本地化字面量（Xcode 15+ String Catalog 全自动静态提取）
+- **静态字面量（Xcode 15+ String Catalog 自动静态提取）**：编写 UI 时直接传字符串字面量（如 `AuraSection("Settings")`），由 Xcode 编译期 AST 扫描器自动提取到宿主工程的 `Localizable.xcstrings`；
+- **动态数据直出（Verbatim 模式）**：网络 API 或用户输入变量调用 `verbatim:` 参数（如 `SettingsRow(verbatim: user.name)`），防止编译错误与查表开销；
+- **零内置文案闭环**：组件库内部 100% 不内置死锁文案，状态与指示器优先采用原生 SF Symbols 与微动效表达。
 
-编写 UI 代码时直接使用字符串字面量或 Apple 原生未具名签名，Xcode 会在编译阶段由 AST 扫描器自动将文本提取到宿主工程的 `Localizable.xcstrings` 中：
-
-```swift
-// 1. 原生声明式提取
-AuraSection("Upcoming Tasks", icon: "sparkles", badgeText: "Today") {
-    SettingsRow(
-        icon: "bell.badge.fill",
-        iconColor: .orange,
-        title: "Daily Notification",
-        subtitle: "Send soft haptics 15m before event",
-        badgeText: "PRO"
-    )
-}
-
-// 2. 交互控件与空状态自动提取
-PillButton("Create New Script", icon: "plus") { ... }
-NoticeBanner(style: .info, "Cloud sync complete", actionTitle: "View")
-```
-
-#### 2. 动态运行时数据直出（Verbatim 模式）
-
-对于来自服务器 API、用户输入或非本地化的动态字符串，使用 `verbatim:` 初始化器原样直出，避免查表开销与漏译警告：
-
-```swift
-// 动态非本地化用户名或文件夹名称
-AuraSection(verbatim: userFolder.title, icon: "folder") {
-    SettingsRow(
-        verbatim: account.displayName,
-        subtitle: account.email
-    )
-}
-```
-
-#### 3. 零内置文案哲学（状态优先以图标呈现）
-
-组件库坚持 100% 通用化，**不内置任何写死的业务自然语言文案**：
-- **状态指示器**：如 `TypewriterStreamingCard` 的“生成中”状态默认通过呼吸闪烁圆点与动效直接表达，无需绑定语言；
-- **通用功能按键**：如 `KeyboardAccessoryBar` 的收起键盘按键默认采用 `keyboard.chevron.compact.down` 纯图标；如需文字可由外部显式传入 `doneTitle: "Done"`；
-- **业务微标**：如 `SettingsRow` 的徽标由 `badgeText` 参数完全托管，由业务方决定展示 `"PRO"`、`"VIP"` 还是 `"NEW"`。
+> 📖 **完整全量组件速查字典与详细调用代码，请统一查阅单一真实源**：
+> 👉 **[`docs/INTEGRATION_GUIDE.md`](docs/INTEGRATION_GUIDE.md)**
 
 ## 本地构建与验证
 
