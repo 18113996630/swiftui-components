@@ -1,6 +1,7 @@
-# AI 接入与协同规范指南 (AI Integration & Implementation Guide)
+# AI 接入与协同规范指南 (Apple Recommended App & ADA Caliber Integration Guide)
 
 本文档专为 **AI 编程助手**（如 Antigravity、Claude Code、Cursor、Windsurf、GitHub Copilot 等）以及负责指导 AI 的 iOS 研发人员设计。
+核心使命：**指导业务侧 AI 助手严格以 Apple Design Award (ADA) 获奖作品与 Apple 官方推荐应用（Apple Recommended Apps）的严苛人机工程与视觉标准，构建具备克制美学、呼吸感、物理触感与零瑕疵排版的生产级 SwiftUI 页面。**
 当你在一个新项目或现有业务工程中接入并使用 `AuraDesignSystem`（`swiftui-components`）时，**必须严格遵循本文档所定义的流程与设计系统红线**。
 
 ---
@@ -75,7 +76,7 @@ let package = Package(
 ```markdown
 # 业务工程 UI 开发规范：AuraDesignSystem 消费法则
 
-本工程接入了 `AuraDesignSystem` 统一微光设计系统。为避免规则过时与版本错配，你必须遵循以下动态自省流程：
+本工程接入了 `AuraDesignSystem` 统一微光设计系统。为避免规则过时与版本错配，你必须严格遵循 Apple Design Award (ADA) 获奖作品与 Apple 官方推荐应用的人机交互标准，执行以下动态自省流程：
 
 ## 1. 动态查阅最新规范（单一真实源）
 在编写、重构或设计任何 UI 界面之前，你必须优先读取本地 SPM 已检出的组件库权威文档：
@@ -86,39 +87,60 @@ let package = Package(
 **查阅文档中的「组件速查表」匹配现有官方组件，严禁自造轮子。**
 
 ## 2. 全场景三层黄金架构（适用于所有页面类型）
-所有页面必须严格按照组件库规范构建，禁止随意散落原生 ScrollView + VStack 拼凑界面：
+所有页面必须严格按照组件库三层架构构建，禁止随意散落原生 `ScrollView + VStack` 拼凑界面：
 AuraScaffold (全屏外框，自动锁死 16pt 外边距与 24pt 段落流，打底 systemGroupedBackground)
   └── AuraSection (段落标头；若卡片内已有彩色图标，Header 必须保持纯文字大标)
         └── BaseCard (纯白浮岛高质感卡片仓；若子组件已内置 padding 则显式声明 padding: 0)
               └── 业务核心组件 (SettingsRow / ChecklistRow / TimelineTaskRow / FlowLayout / ClearableTextFieldRow 等)
 
-## 3. 🚨 跨场景五大通用人机交互铁律（适用于任何页面，严禁触碰）
-无论你在构建表单、看板、时间线、标签池、详情页还是模态弹窗，必须严格遵守以下法则：
+## 3. 🏆 Apple Design Award (ADA) 级七大顶流人机交互铁律（严禁触碰）
+无论你在构建表单、看板、时间线、标签池、详情页还是模态弹窗，必须严格遵循 Apple 官方推荐标杆标准：
 
-1. 【视觉重心与色彩克制 (80/20 法则)】：
-   - 页面 80% 由黑白与语义灰构成清晰骨架，20% 由 `@Environment(\.themePalette)` 动态注入点睛。
-   - ❌ 绝对禁止在 `AuraSection` 标题和卡片内部子项同时塞彩色图标，造成眼花缭乱的“贴纸本”碎裂感；卡片有图标时 Header 必须纯文本。
-2. 【严苛物理对齐基线 (Zero Jagging)】：
-   - 任何列表、设置行或卡片内部，相邻行/元素的文本起始线必须锁死在同一物理垂线上（表单类统一图标占位，Divider 锁死 `.padding(.leading, 58)`）。
-   - ❌ 绝对禁止同一卡片内“一行带图标、一行无图标”导致首字左边距参差不齐。
-3. 【容器内边距防膨胀 (Zero Compounding Padding)】：
-   - 容器与子项的内边距职责必须单一明确。当子组件已自带 padding（如 `SettingsRow` 自带 20pt）时，外层 `BaseCard` 必须显式声明 `padding: 0`。
+1. 【原生导航通透感与零浮动药丸 (Native Chrome / Zero Floating Pills)】：
+   - 模态 Sheet 关闭/完成按钮一律采用原生 `ToolbarItem(placement: .confirmationAction) { Button("完成") { ... } }` 与 `.cancellationAction`。
+   - ❌ 绝对禁止在右上角自造白底带阴影的“浮动白色药丸”实体按键，杜绝浓厚的 Web/安卓拼凑异物感。
+   - 模态页强制使用 `.navigationBarTitleDisplayMode(.inline)`，一级主视图采用 `.large` 大标并响应滚动收起。
+2. 【全域 58pt 严格物理对齐基线 (Rigid 58pt Anchor)】：
+   - 当列表行包含 24pt 图标底座时，卡片内所有分割线必须统一锁死 `.padding(.leading, 58).opacity(0.35)`！
+   - ❌ 绝对禁止同一卡片内“一行有图标、一行无图标”导致首字锯齿凹凸；绝对禁止卡片 A 是 58pt、卡片 B 变成 20pt。
+3. 【高级多巴胺语义分区与防荧光色 (Harmonious Color Chunking & Anti-Neon)】：
+   - 严格遵循 80% 黑白灰骨架 + 20% 多巴胺提亮，杜绝彩虹杂色与刺眼高饱和霓虹色（如 `#FF00FF`、`#00FF00`）。
+   - 遵循功能分类色相：基础设施(Indigo)、智慧人设(温润 Berry 浆果紫)、工具智库(Teal/Amber)、系统数据(Sky)。
+   - ❌ 绝对禁止全屏纯蓝同质化（导致用户无法通过色彩建立视觉分区记忆）。
+4. 【活态数据感知与严密微排版 (Living States & Micro-Typography)】：
+   - 拒绝冷冰冰的静态死说明，优先注入生命力状态（如：`● 链路通畅 · 响应延时 42ms`、`上次备份：今天 14:20 · 空间充足`）。
+   - 变动数值、百分比、时间戳、延时计数必须显式修饰 `.monospacedDigit()`，杜绝视线跳动抖动。
+   - 辅助微标与选择器必须严格维持**单行精致排版**；❌ 绝对禁止出现 `内置 AI (推荐) [推荐]` 的双重推荐套娃事故。
+   - 中文副标题严格精炼（12~16 字），❌ 严禁双字词在中间被劈开换行（如“停 / 顿”），严禁末行留单字孤行。
+5. 【容器内边距防膨胀法则 (Zero Compounding Padding)】：
+   - 当子组件已自带 padding（如 `SettingsRow` 自带 20pt）时，外层 `BaseCard` 必须显式声明 `padding: 0`。
    - ❌ 绝对禁止 20pt + 20pt 嵌套堆叠，把卡片撑成臃肿虚胖的面团。
-4. 【排版呼吸与字符防断裂 (Typography & Anti-Orphan)】：
-   - 核心大标题用 `Color.primary`；次级说明直接用 `Color.secondary`（严禁二次叠加 `.opacity` 导致文字发灰跌破 WCAG 4.5:1）。
-   - 中文副标题严格精炼（12~16 字），❌ 严禁词汇中间被硬生生劈开换行（如“停 / 顿”），严禁末尾留单字孤行。
-   - 右侧状态微标、选择器等辅助控件必须严格维持**单行精致排版**，严禁溢出折成两行。
-5. 【原生导航与物理触感 (Native Chrome & Tactile Feel)】：
-   - 所有页面按钮必须挂载 `.buttonStyle(ScaleButtonStyle())` 赋予 0.97 物理缩放与轻触震动。
-   - 模态 Sheet 关闭/完成按钮一律采用原生 `ToolbarItem(placement: .confirmationAction) { Button("完成") { ... } }`，❌ 严禁自造白色浮动实体药丸。
+6. 【物理微缩触感与底部安全区 (Haptic & Safe Area)】：
+   - 所有可点击按钮必须挂载 `.buttonStyle(ScaleButtonStyle())` 赋予 0.97 物理缩放与轻触微震动（`HapticManager.impact(.light)`）。
+   - 滚动容器内部底部必须预留 `.padding(.bottom, 24~40)`，确保滑动到最底部时最后一个卡片不贴合 Home Indicator 小黑条。
+7. 【内容优先与无障碍对比度 (Content-First & WCAG 4.5:1+)】：
+   - 核心大标题与关键数值使用 `DesignSystem.Color.textPrimary`（`Color.primary`），次级说明使用 `DesignSystem.Color.textSecondary`（`Color.secondary`）。
+   - ❌ 绝对禁止在 `secondary` 基础上二次叠加 `.opacity(0.6)` 造成文字发灰、发虚的疲劳感。
+   - 浮岛纯白卡片（连续曲率超椭圆 + 微漫反射阴影）作为文本保护仓，不可让大面积正文直接裸露在冷灰底板上。
 
-## 4. 🎯 全场景 5 大页面骨架速查索引 (5 Universal Archetypes)
-根据当前业务需求类型，直接对应套用组件库官方规范：
+## 4. 🎯 全场景 6 大标杆页面骨架速查索引 (6 Universal Archetypes)
+根据当前业务需求类型，直接对应套用组件库官方规范（详见 INTEGRATION_GUIDE.md 第五步）：
 - 🏢 **表单设置型 (Settings & Forms)** ➔ `AuraSection`（纯文本）+ `BaseCard(padding: 0)` + `SettingsRow` + 58pt 分割线
-- 📊 **数据看板型 (Dashboard & Metrics)** ➔ `AuraScaffold` + 双列等高指标卡 + `BaseCard` + `PillBadge` 状态微标
-- ⏱️ **时间线与打卡型 (Timeline & Checklist)** ➔ `TimelineTaskRow`（38pt 饱满节点 + 虚线轨迹）+ `ChecklistRow`
+- 📊 **数据看板型 (Dashboard & Metrics)** ➔ `AuraScaffold` + 双列等高指标卡 + `BaseCard(padding: 16)` + `.monospacedDigit()` + `PillBadge`
+- ⏱️ **时间线与打卡型 (Timeline & Checklist)** ➔ `TimelineTaskRow`（38pt 饱满节点 + 虚线轨迹）+ `ChecklistRow` + 触觉震动
 - 🏷️ **标签池与分类筛选型 (Chips & Flow)** ➔ `PillSegmentedPicker` / `UnderlinedTabBar` + `FlowLayout` + `SelectableChip`
-- 🤖 **AI 流式与状态通知型 (AI Streaming & Modals)** ➔ `NoticeBanner` + `TypewriterStreamingCard` + `EmptyStateView`
+- 🤖 **AI 流式与状态通知型 (AI Streaming & Feedback)** ➔ `NoticeBanner` + `TypewriterStreamingCard` + `EmptyStateView`
+- 💎 **沉浸式 Hero 模态与底部浮层 (Hero Sheet & Modal Detents)** ➔ `HeroBannerSheet` (28pt 浮岛卡片 + 多巴胺渐变顶栏) + `.presentationDetents([.medium, .large])`
+
+## 5. 🛡️ Apple 推荐级交付自检门禁 (Pre-Flight ADA Quality Gate)
+交付代码前，你必须逐项确认已无以下低级瑕疵：
+- [ ] 模态弹窗关闭/完成键是否为原生 ToolbarItem（0 个浮动白色药丸）？
+- [ ] 卡片内所有行文字起点是否严格对齐在 58pt 垂直线上？
+- [ ] 动态数值是否已挂载 `.monospacedDigit()` 避免跳变？
+- [ ] 中文副标题是否已精炼且无单字孤行、断词断句？
+- [ ] 多行列表的外层 BaseCard 是否已显式声明 `padding: 0`？
+- [ ] 滚动容器底部是否已留足 24~40pt 呼吸边距避让 Home Indicator？
+- [ ] 终端 `swift build` 是否处于 0 错误、0 警告编译通过状态？
 ```
 
 ---
@@ -267,27 +289,28 @@ struct ProfileSettingsView: View {
 }
 ```
 
-### 标杆级高级表单与设置页组装范式 (Settings & Form Specimen)
+### 范式 1：标杆级高级表单与设置中心 (Settings & Form Archetype)
 
-> 💡 **核心规约（防止 AI 首字错位与视觉噪点）**：
-> 当搭建包含选择器、状态检测与多级跳转的复杂设置页（如 AI 设置、账户高级设置）时，**必须参考 [`AISettingsSpecimenView.swift`](../Sources/AuraDesignSystem/Previews/AISettingsSpecimenView.swift) 的标杆排版**：
+> 💡 **Apple 官方推荐级排版规约（消灭首字错位、膨胀与视觉噪点）**：
 > 1. **纯文字 Header**：卡片内部已具备彩色图标时，`AuraSection` 标题必须使用纯文字（如 `AuraSection("AI 服务商")`），严禁在 Header 处重复堆砌彩块；
 > 2. **零外嵌内边距**：多行列表项的 `BaseCard` 必须显式传入 `padding: 0`（由 `SettingsRow` 自带内部 20pt padding 承托）；
-> 3. **58pt 对齐线**：卡片内所有行必须保留图标占位，Divider 必须指定 `.padding(.leading, 58)`，确保文字起点在同一条垂线上；
+> 3. **全域 58pt 对齐线**：卡片内所有行必须保留图标占位，Divider 必须统一指定 `.padding(.leading, 58).opacity(0.35)`，确保文字起点在同一条垂线上；
 > 4. **单行精致右侧**：选择器内容必须与 `PillBadge` 和上下指示符并排在单行内，严禁折行；
-> 5. **原生导航栏**：使用标准 `ToolbarItem(placement: .confirmationAction)` 渲染完成按钮。
+> 5. **活态数据感知**：使用实时延时测试（`● 链路通畅 · 响应延时 42ms`）与同步时间戳代替冷硬的静态提示；
+> 6. **多巴胺功能分区**：基础设施(Indigo)、智慧人设(温润 Berry 浆果紫)、创作工具(Teal/Orange/Amber)、系统数据(Sky)；
+> 7. **原生导航栏**：使用标准 `ToolbarItem(placement: .confirmationAction) { Button("完成") }` 渲染模态关闭按键，严禁自造白色悬浮药丸。
 
 ```swift
 NavigationStack {
     AuraScaffold {
-        // 1. 服务商与检测：纯文本标头 + 统一图标列对齐
+        // 1. 服务商与活态延时检测：纯文本标头 + 统一 58pt 基线
         AuraSection("AI 服务商") {
             BaseCard(cornerRadius: DesignSystem.CornerRadius.card, padding: 0) {
                 VStack(spacing: 0) {
-                    // 单行选择器
+                    // 单行紧凑选择器
                     SettingsRow(
                         icon: "cpu.fill",
-                        iconColor: themePalette.color,
+                        iconColor: ThemePalette.indigo.color,
                         title: "服务提供商"
                     ) {
                         HStack(spacing: 6) {
@@ -295,7 +318,7 @@ NavigationStack {
                                 .font(DesignSystem.Typography.subheadline)
                                 .foregroundColor(DesignSystem.Color.textSecondary)
 
-                            PillBadge(verbatim: "推荐", style: .subtle(themePalette.color))
+                            PillBadge(verbatim: "推荐", style: .subtle(ThemePalette.indigo.color))
 
                             Image(systemName: "chevron.up.chevron.down")
                                 .font(.system(size: 11, weight: .semibold))
@@ -303,24 +326,26 @@ NavigationStack {
                         }
                     }
 
-                    Divider().padding(.leading, 58) // 58pt 严格对齐文字起始线
+                    Divider().padding(.leading, 58).opacity(0.35)
 
-                    // 连通性测试（统一占位，首字平整无锯齿）
+                    // 连通性测试（活态延时感知，带毫秒级数据）
                     SettingsRow(
                         icon: "antenna.radiowaves.left.and.right",
-                        iconColor: themePalette.color,
+                        iconColor: ThemePalette.indigo.color,
                         title: "服务连通性",
                         verbatimSubtitle: "链路通畅 · 响应延时 42ms"
                     ) {
-                        Button(action: { HapticManager.impact(.medium) }) {
+                        Button(action: {
+                            HapticManager.impact(.medium)
+                        }) {
                             HStack(spacing: 4) {
                                 Image(systemName: "bolt.fill").font(.system(size: 10, weight: .bold))
                                 Text("测试").font(DesignSystem.Typography.caption).fontWeight(.semibold)
                             }
                             .padding(.horizontal, 11)
                             .padding(.vertical, 5)
-                            .background(themePalette.color.opacity(0.12))
-                            .foregroundColor(themePalette.color)
+                            .background(ThemePalette.indigo.color.opacity(0.12))
+                            .foregroundColor(ThemePalette.indigo.color)
                             .clipShape(Capsule())
                         }
                         .buttonStyle(ScaleButtonStyle())
@@ -329,33 +354,115 @@ NavigationStack {
             }
         }
 
-        // 2. 详细配置：副标题精炼控制，严禁硬折行
+        // 2. 人设与技能管理：温润浆果紫，副标题精炼控制防断词
         AuraSection("创作者人设与技能") {
             BaseCard(cornerRadius: DesignSystem.CornerRadius.card, padding: 0) {
                 VStack(spacing: 0) {
                     SettingsRow(
                         icon: "person.text.rectangle.fill",
-                        iconColor: themePalette.color,
+                        iconColor: ThemePalette.berry.color,
                         title: "创作者人设",
-                        subtitle: "定位、语言调性与去 AI 味表达规则", // 精炼文案，防止“停/顿”被截断
-                        action: { /* 打开人设配置 */ }
-                    )
+                        subtitle: "定位、语言调性与去 AI 味表达规则" // 精炼 16 字，消灭“停/顿”断词
+                    ) {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(DesignSystem.Color.textTertiary)
+                    }
 
-                    Divider().padding(.leading, 58)
+                    Divider().padding(.leading, 58).opacity(0.35)
 
                     SettingsRow(
                         icon: "sparkles",
-                        iconColor: themePalette.color,
+                        iconColor: ThemePalette.berry.color,
                         title: "AI 功能管理",
-                        verbatimSubtitle: "3 项已启用",
-                        action: { /* 打开技能管理 */ }
-                    )
+                        verbatimSubtitle: "3 项已启用"
+                    ) {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(DesignSystem.Color.textTertiary)
+                    }
+                }
+            }
+        }
+
+        // 3. 创作与生成工具：合并三行高信息密度卡片，色彩韵律清晰
+        AuraSection("创作与生成工具") {
+            BaseCard(cornerRadius: DesignSystem.CornerRadius.card, padding: 0) {
+                VStack(spacing: 0) {
+                    SettingsRow(
+                        icon: "scissors",
+                        iconColor: ThemePalette.teal.color,
+                        title: "断句与播报停顿",
+                        subtitle: "紧凑短句与自然口播停顿规则"
+                    ) {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(DesignSystem.Color.textTertiary)
+                    }
+
+                    Divider().padding(.leading, 58).opacity(0.35)
+
+                    SettingsRow(
+                        icon: "megaphone.fill",
+                        iconColor: ThemePalette.orange.color,
+                        title: "宣发渠道与提示词",
+                        subtitle: "多平台分发模板与爆款钩子库"
+                    ) {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(DesignSystem.Color.textTertiary)
+                    }
+
+                    Divider().padding(.leading, 58).opacity(0.35)
+
+                    SettingsRow(
+                        icon: "flame.fill",
+                        iconColor: ThemePalette.amber.color,
+                        title: "爆款参考智库",
+                        subtitle: "管理各平台高赞爆款参考与创作模式"
+                    ) {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(DesignSystem.Color.textTertiary)
+                    }
+                }
+            }
+        }
+
+        // 4. 数据与支持：天空蓝系统安全，活态云端备份感知
+        AuraSection("数据与支持") {
+            BaseCard(cornerRadius: DesignSystem.CornerRadius.card, padding: 0) {
+                VStack(spacing: 0) {
+                    SettingsRow(
+                        icon: "icloud.fill",
+                        iconColor: SwiftUI.Color(red: 0.18, green: 0.55, blue: 0.95),
+                        title: "iCloud 备份",
+                        verbatimSubtitle: "上次同步：今天 14:20 · 空间充足"
+                    ) {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(DesignSystem.Color.textTertiary)
+                    }
+
+                    Divider().padding(.leading, 58).opacity(0.35)
+
+                    SettingsRow(
+                        icon: "questionmark.circle.fill",
+                        iconColor: SwiftUI.Color(red: 0.20, green: 0.65, blue: 0.90),
+                        title: "功能教程",
+                        subtitle: "查看 AI 提词与上下文变量使用教程"
+                    ) {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(DesignSystem.Color.textTertiary)
+                    }
                 }
             }
         }
     }
+    .padding(.bottom, DesignSystem.Spacing.xLarge) // 底部 24pt 呼吸留白避让 Home 条
     .navigationTitle("AI 设置")
-    .navigationBarTitleDisplayMode(.inline)
+    .navigationBarTitleDisplayMode(.inline) // 模态弹窗强制 inline
     .toolbar {
         ToolbarItem(placement: .confirmationAction) {
             Button("完成") {
@@ -368,58 +475,68 @@ NavigationStack {
 }
 ```
 
-### 范式 2：数据看板与核心指标仪表盘 (Dashboard & Metrics Specimen)
+### 范式 2：数据看板与核心指标仪表盘 (Dashboard & Metrics Archetype)
 
-> 💡 **核心规约（防止卡片参差与色彩杂乱）**：
-> 1. **等高双列网格**：使用 `LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12)`；
-> 2. **数据大字阶**：指标数值强制采用 `DesignSystem.Typography.largeTitle`（28pt Bold Rounded），副标采用 `caption`；
-> 3. **状态微标点睛**：环比/同比上升使用 `PillBadge(verbatim: "+24.5%", icon: "arrow.up.right", style: .subtle(ThemePalette.sage.color))`，克制提示。
+> 💡 **Apple 官方推荐级排版规约（消除数字跳动与高矮参差）**：
+> 1. **等高双列网格**：使用 `LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12)` 消除错位；
+> 2. **数字防抖大字阶**：指标数值强制采用 `DesignSystem.Typography.largeTitle`（28pt Bold Rounded）并挂载 `.monospacedDigit()`，消除动态刷新时的视线抖动；
+> 3. **克制状态微标**：增长采用 `PillBadge(verbatim: "+18.2%", icon: "arrow.up.right", style: .subtle(ThemePalette.sage.color))`，次级说明使用 `caption` + `textSecondary`；
+> 4. **下钻物理触感**：指标卡挂载 `.buttonStyle(ScaleButtonStyle())`，赋予 0.97 轻触微缩手感。
 
 ```swift
 AuraScaffold {
     AuraSection("今日核心数据看板") {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: DesignSystem.Spacing.medium) {
-            // 指标卡 1
-            BaseCard(cornerRadius: DesignSystem.CornerRadius.card, padding: 16) {
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
-                    HStack {
-                        Text("全网总曝光")
-                            .font(DesignSystem.Typography.caption)
-                            .foregroundColor(DesignSystem.Color.textSecondary)
-                        Spacer()
-                        PillBadge(verbatim: "+18.2%", icon: "arrow.up.right", style: .subtle(ThemePalette.sage.color))
+            // 指标卡 1：总曝光
+            Button(action: { HapticManager.impact(.light) }) {
+                BaseCard(cornerRadius: DesignSystem.CornerRadius.card, padding: 16) {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
+                        HStack {
+                            Text("全网总曝光")
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundColor(DesignSystem.Color.textSecondary)
+                            Spacer()
+                            PillBadge(verbatim: "+18.2%", icon: "arrow.up.right", style: .subtle(ThemePalette.sage.color))
+                        }
+                        Text("142.8k")
+                            .font(DesignSystem.Typography.largeTitle)
+                            .monospacedDigit() // 数字防抖
+                            .foregroundColor(DesignSystem.Color.textPrimary)
                     }
-                    Text("142.8k")
-                        .font(DesignSystem.Typography.largeTitle)
-                        .foregroundColor(DesignSystem.Color.textPrimary)
                 }
             }
+            .buttonStyle(ScaleButtonStyle())
 
-            // 指标卡 2
-            BaseCard(cornerRadius: DesignSystem.CornerRadius.card, padding: 16) {
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
-                    HStack {
-                        Text("完播转化率")
-                            .font(DesignSystem.Typography.caption)
-                            .foregroundColor(DesignSystem.Color.textSecondary)
-                        Spacer()
-                        PillBadge(verbatim: "达标", style: .subtle(themePalette.color))
+            // 指标卡 2：转化率
+            Button(action: { HapticManager.impact(.light) }) {
+                BaseCard(cornerRadius: DesignSystem.CornerRadius.card, padding: 16) {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
+                        HStack {
+                            Text("完播转化率")
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundColor(DesignSystem.Color.textSecondary)
+                            Spacer()
+                            PillBadge(verbatim: "达标", style: .subtle(themePalette.color))
+                        }
+                        Text("64.2%")
+                            .font(DesignSystem.Typography.largeTitle)
+                            .monospacedDigit()
+                            .foregroundColor(DesignSystem.Color.textPrimary)
                     }
-                    Text("64.2%")
-                        .font(DesignSystem.Typography.largeTitle)
-                        .foregroundColor(DesignSystem.Color.textPrimary)
                 }
             }
+            .buttonStyle(ScaleButtonStyle())
         }
     }
 }
 ```
 
-### 范式 3：时间线与任务轨迹 (Timeline & Checklist Specimen)
+### 范式 3：任务时间线与打卡轨迹 (Timeline & Checklist Archetype)
 
-> 💡 **核心规约（防止节点脱节与线段断裂）**：
-> 1. 时间线项必须直接嵌套在 `BaseCard` 内部，依靠内置的 38pt 饱满节点和连接虚线形成闭环；
-> 2. Checklist 待办项多行排列时，中间使用 `.opacity(0.3)` 细分割线分割。
+> 💡 **Apple 官方推荐级排版规约（消除节点脱节与线段断裂）**：
+> 1. **一体化节点轨迹**：时间线项直接嵌套在 `BaseCard` 内部，依靠内置的 38pt 饱满节点和连接虚线形成优雅闭环；
+> 2. **等宽时间排版**：时间区间字符串挂载 `.monospacedDigit()`，消除字符宽度不均；
+> 3. **复选微交互**：`ChecklistRow` 采用轻触震动与划线淡化动效，给用户清晰的结案反馈。
 
 ```swift
 AuraScaffold {
@@ -448,14 +565,25 @@ AuraScaffold {
             }
         }
     }
+
+    AuraSection("今日待办清单") {
+        BaseCard(padding: 0) {
+            VStack(spacing: 0) {
+                ChecklistRow(title: "复核小红书开篇钩子", isCompleted: $todo1)
+                Divider().padding(.leading, 58).opacity(0.35)
+                ChecklistRow(title: "导出 4K 60fps 视频母带", isCompleted: $todo2)
+            }
+        }
+    }
 }
 ```
 
-### 范式 4：分类筛选与动态标签池 (Chips & Flow Layout Specimen)
+### 范式 4：分类筛选与动态标签池 (Chips & Flow Layout Archetype)
 
-> 💡 **核心规约（防止标签折行错乱与手感生硬）**：
-> 1. 顶部使用 `PillSegmentedPicker` 或 `UnderlinedTabBar` 作为一级分类锚点；
-> 2. 标签云使用官方 `FlowLayout(spacing: 8)` 包装 `SelectableChip` 或 `DeletableChip`，原生支持弹性选中动效。
+> 💡 **Apple 官方推荐级排版规约（防止折行错乱与手感生硬）**：
+> 1. **一级锚点**：顶部使用 `PillSegmentedPicker` 或 `UnderlinedTabBar` 作为分类锚点；
+> 2. **原生流式折行**：标签池强制使用 `FlowLayout(spacing: 8)` 承载 `SelectableChip`，原生适配任意屏幕宽度；
+> 3. **弹性 Checkmark 展开**：选中有轻触触觉反馈与弹性 Checkmark 图标展开动效。
 
 ```swift
 AuraScaffold {
@@ -475,6 +603,7 @@ AuraScaffold {
                         title: tag,
                         isSelected: selectedTags.contains(tag)
                     ) {
+                        HapticManager.impact(.light)
                         if selectedTags.contains(tag) {
                             selectedTags.remove(tag)
                         } else {
@@ -488,11 +617,12 @@ AuraScaffold {
 }
 ```
 
-### 范式 5：AI 流式交互与状态反馈 (AI Streaming & Feedback Specimen)
+### 范式 5：AI 流式交互与状态反馈 (AI Streaming & Feedback Archetype)
 
-> 💡 **核心规约（防止状态词死锁与全屏空洞）**：
-> 1. 状态提示使用 `NoticeBanner(style: .info, "...")`；
-> 2. AI 生成卡片采用 `TypewriterStreamingCard`，内置纯图标呼吸动效与停止响应按键，零硬编码文案。
+> 💡 **Apple 官方推荐级排版规约（消灭状态词死锁与空洞感）**：
+> 1. **就近状态提示**：状态提示使用嵌入式 `NoticeBanner(style: .info, "...")`；
+> 2. **纯视觉流式指示**：AI 生成卡片采用 `TypewriterStreamingCard`，内置纯图标呼吸指示灯与停止响应按键，零硬编码文案；
+> 3. **标杆级空状态**：使用 `EmptyStateView` 搭配 64pt 图标底座与明确行动引导。
 
 ```swift
 AuraScaffold {
@@ -506,6 +636,69 @@ AuraScaffold {
             isStreaming: isGenerating,
             onStop: { isGenerating = false }
         )
+    }
+
+    // 3. 若无生成历史则优雅兜底
+    if streamingOutput.isEmpty && !isGenerating {
+        EmptyStateView(
+            icon: "sparkles",
+            title: "暂无生成内容",
+            subtitle: "输入创作诉求，AI 助手将为您实时生成结构化脚本",
+            actionTitle: "立即开始",
+            action: { startGeneration() }
+        )
+    }
+}
+```
+
+### 范式 6：沉浸式 Hero 模态与半屏浮层 (Hero Sheet & Modal Detents Archetype)
+
+> 💡 **Apple 官方推荐级排版规约（大厂级卡片弹窗与高级手势缩放）**：
+> 1. **28pt 超椭圆顶栏**：采用 `HeroBannerSheet`，顶部融入多巴胺平滑渐变与 52x52 纯白超椭圆图标底座；
+> 2. **原生分段高度**：挂载 `.presentationDetents([.medium, .large])` 与 `.presentationDragIndicator(.visible)`；
+> 3. **安全闭环**：右上角提供标准毛玻璃关闭胶囊，底部提供主行动按键。
+
+```swift
+struct EditTaskModalView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var taskTitle = "AI 文案润色"
+
+    var body: some View {
+        HeroBannerSheet(
+            "编辑任务详情",
+            subtitle: "设定优先级与自动化提词规则",
+            stepText: "步骤 2/3",
+            icon: "slider.horizontal.3",
+            palette: .berry,
+            onClose: { dismiss() }
+        ) {
+            VStack(spacing: DesignSystem.Spacing.large) {
+                BaseCard(padding: 0) {
+                    ClearableTextFieldRow(
+                        title: "任务名称",
+                        text: $taskTitle,
+                        placeholder: "请输入任务名称"
+                    )
+                }
+
+                Button(action: {
+                    HapticManager.notification(.success)
+                    dismiss()
+                }) {
+                    Text("保存并应用")
+                        .font(DesignSystem.Typography.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .background(ThemePalette.berry.color)
+                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                }
+                .buttonStyle(ScaleButtonStyle())
+            }
+            .padding(.horizontal, DesignSystem.Layout.pagePadding)
+        }
+        .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
     }
 }
 ```
@@ -576,40 +769,51 @@ SettingsRow.toggle(
 
 ---
 
-## 第七步：AI 常见翻车陷阱与防御守则 (Anti-patterns & Fixes)
+## 第七步：AI 常见翻车陷阱与防御守则 (Anti-patterns & ADA Best Practices)
 
-| 典型翻车场景 | ❌ AI 错误写法（严禁） | ✅ 标准正确写法 | 根因与设计系统考量 |
+以下是 AI 在 SwiftUI 开发中最容易出现的粗糙工程感代码与 **Apple Design Award 标杆写法** 的全量对标：
+
+| 典型翻车场景 | ❌ AI 常见粗糙/错误写法（严禁） | ✅ Apple 官方推荐级标杆写法 | 💡 评审与人机工程深度考量 |
 |---|---|---|---|
-| **自造圆角卡片** | `VStack { ... }.background(Color.white).cornerRadius(10)` | `BaseCard { ... }` | 破坏 20pt 超椭圆（`.continuous`）与全局漫反射阴影规范。 |
-| **卡片内边距双重臃肿** | `BaseCard { VStack { SettingsRow(...) } }` 导致 20pt + 20pt 内边距堆叠 | `BaseCard(cornerRadius: DesignSystem.CornerRadius.card, padding: 0) { ... }` | `SettingsRow` 已自带横向 20pt 内边距，外层必须显式 `padding: 0`。 |
-| **同一卡片行首锯齿错位** | 第 1 行 `icon: "cpu"`，第 2 行 `icon: nil` 导致首字左边距参差不齐 | 所有行统一传入图标或占位，`Divider().padding(.leading, 58)` | 保证卡片内文字起始线严格对齐在同一垂直线上。 |
-| **Header与Row双重图标打架** | `AuraSection("标题", icon: "globe")` + 内部 `SettingsRow(icon: "doc")` | 卡片内有图标时 Header 保持纯文本：`AuraSection("标题")` | 避免 Header 彩块与内部行争夺视线焦点，防止变成眼花缭乱贴纸本。 |
-| **右侧选择器多行折叠溢出** | 右侧文字与提示换行：`VStack { Text("内置 AI"); Text("(推荐)") }` | 单行紧凑排版：`HStack { Text("内置 AI"); PillBadge(verbatim: "推荐"); Image(...) }` | 保持单行精致居中，消除高度溢出与未适配宽度的 Bug 感。 |
-| **中文副标题断词与孤字** | “停 / 顿”词汇被劈开截断，第二行留单一孤字“规则” | 精炼副标题文案（控制在 12~16 字），消除字词断裂与孤行 | 确保中文排版通顺呼吸，杜绝孤行与恶性硬截断。 |
-| **看板网格高矮不一** | 两个指标卡高度参差不齐：手写无规则 HStack/VStack | `LazyVGrid` + `BaseCard(padding: 16)` 统一指标字阶 | 保证双列网格严格等高对齐，数字统一采用 28pt Bold。 |
-| **标签云硬编码宽度溢出** | 手写 `ScrollView(.horizontal)` 或固定芯片宽度导致截断 | 官方 `FlowLayout(spacing: 8)` 承载 `SelectableChip` | 原生自适应折行并赋予微触感选择动效。 |
-| **AI流式状态文案死锁** | 手写“正在生成中…”、“已完成”等写死状态文本 | `TypewriterStreamingCard` 内置纯视觉呼吸动效 | 零硬编码文本闭环，状态自明无需多语言维护。 |
-| **次级文字发灰** | `Text("副标题").foregroundColor(.gray).opacity(0.6)` | `Text("副标题").foregroundColor(DesignSystem.Color.textSecondary)` | 二次叠加透明度会导致对比度严重低于 WCAG 4.5:1，造成视觉疲劳。 |
-| **生硬原生滚动** | `ScrollView { VStack(spacing: 20) { ... } }` | `AuraScaffold { ... }` | 丢失 16pt 外边距与 24pt 段落流节奏控制。 |
-| **硬编码主题色** | `.foregroundColor(.blue)` 或 `.tint(.blue)` | `@Environment(\.themePalette) var theme` 并使用 `theme.primary` | 无法穿透动态 9 色多巴胺换肤系统。 |
-| **按键缺失触感** | 普通 `Button(...) { ... }` | `Button(...) { ... }.buttonStyle(ScaleButtonStyle())` | 缺少 0.97 弹性微缩手感与物理反馈。 |
-| **动态变量错传** | `SettingsRow(title: user.dynamicName)`（若定义为 LocalizedStringKey 会报编译错误） | `SettingsRow(verbatim: user.dynamicName)` | `String` 变量无法隐式转换为 `LocalizedStringKey`，必须走 `verbatim:` 通道。 |
-| **重复实现空状态** | 手写 `Image(...)` + `Text(...)` + `Button(...)` 堆叠居中 | `EmptyStateView(icon: "...", title: "...", subtitle: "...")` | 官方组件已经精调好 64pt 图标底座与最佳纵向间距。 |
+| **自造浮动白色药丸** | `Button("完成").background(Capsule().fill(.white)).shadow(radius: 4)` 悬浮右上角 | 原生 `ToolbarItem(placement: .confirmationAction) { Button("完成") }` | 保持系统 Chrome 原生通透感，杜绝 Web/Android 粗糙拼凑异物感。 |
+| **卡片内边距双重堆叠** | `BaseCard { VStack { SettingsRow(...) } }` 导致 20+20pt 间距 | `BaseCard(cornerRadius: DesignSystem.CornerRadius.card, padding: 0) { ... }` | `SettingsRow` 已自带 20pt 边距，外层必须声明 `padding: 0`，避免卡片臃肿虚胖。 |
+| **卡片间分割线缩进错乱** | 卡片 1 用 58pt，卡片 2 用 20pt，卡片 3 用默认 0pt | 所有列表卡片统一规范：`Divider().padding(.leading, 58).opacity(0.35)` | 统一对齐文字起始锚线（`20 + 24 + 14 = 58pt`），消除视线左右锯齿跳动。 |
+| **同一卡片行首锯齿凹凸** | 第 1 行 `icon: "cpu"`，第 2 行 `icon: nil` 导致首字参差不齐 | 所有行统一传入图标或占位，首字垂直对齐在同一垂线 | 视线引导平滑顺畅，杜绝首字错落导致的业余排版感。 |
+| **Header与Row双重图标打架** | `AuraSection("标题", icon: "globe")` + 内部 `SettingsRow(icon: "doc")` | 卡片内有图标时 Header 保持纯文本：`AuraSection("标题")` | 避免 Header 彩块与卡片内图标争抢焦点，杜绝花哨贴纸本视觉污染。 |
+| **微标与文案双重套娃** | `Text("内置 AI (推荐)")` + 右侧 `PillBadge(verbatim: "推荐")` | 标题保持 `Text("内置 AI")`，推荐属性收拢在单行 `PillBadge` | 消除信息重复累赘，维持视觉层级清爽干净。 |
+| **动态数值微抖动** | `Text("142.8k")` 或 `Text("42ms")` 动态刷新时跳动 | 变动数值必须挂载：`Text("142.8k").monospacedDigit()` | 等宽数字确保字符刷新时不发生横向抖动，维持极高专业感。 |
+| **右侧选择器折行溢出** | 右侧文字与图标纵向换行：`VStack { Text("内置 AI"); PillBadge(...) }` | 单行精致水平收拢：`HStack(spacing: 6) { Text(...); PillBadge(...); Image(...) }` | 单行精致居中，消除高度溢出与未适配宽度的 Bug 破碎感。 |
+| **中文副标题断词与孤字** | “停 / 顿”词汇被劈开截断，第二行留单一孤字“规则” | 精炼副标题文案（严格控制在 12~18 字以内），语义完整 | 确保中文排版通顺呼吸，杜绝孤行与恶性硬截断。 |
+| **全屏单一蓝同质化** | 全屏所有图标全部写死 `.blue`，缺乏色彩节奏 | 遵循功能语义分区：基础设施(Indigo)、人设(Berry)、工具(Teal/Amber)、系统(Sky) | 帮助用户通过色彩空间建立认知地图，杜绝单调冷冰冰感。 |
+| **刺眼霓虹荧光色** | 使用高饱和刺眼荧光粉（如 `#FF00FF`）或荧光绿 | 采用温润多巴胺调色盘（`ThemePalette.berry`、`ThemePalette.teal` 等） | 符合 WCAG 舒适光照规范，色彩高级温润且耐看。 |
+| **次级文字发灰发虚** | `Text("副标").foregroundColor(.gray).opacity(0.6)` | `Text("副标").foregroundColor(DesignSystem.Color.textSecondary)` | 严禁在 `secondary` 上二次叠加透明度，否则对比度低于 WCAG 4.5:1。 |
+| **看板网格高矮不一** | 两个指标卡高度参差不齐：手写无规则 HStack/VStack | `LazyVGrid` + `BaseCard(padding: 16)` 统一指标大字阶 | 保证双列网格严格等高对齐，数字统一采用 28pt Bold。 |
+| **按键生硬缺失物理触感** | 普通原生 `Button(...) { ... }` 生硬跳变 | 显式挂载 `.buttonStyle(ScaleButtonStyle())` | 赋予 0.97 物理缩放微手感与轻微触觉震动反馈。 |
+| **底部卡片紧贴黑条** | 滚动容器底部无 padding，最后一个卡片贴合 Home Indicator | 容器底部预留 `.padding(.bottom, DesignSystem.Spacing.xLarge)` (24~32pt) | 为系统底部手势横条留出优雅呼吸边界，消除逼仄局促感。 |
 
 ---
 
-## 第八步：自动化构建与验收自检清单 (Verification Checklist)
+## 第八步：Apple 推荐级准入自检清单 (ADA Quality Gate Checklist)
 
-当 AI 完成页面编写或重构后，必须执行以下自检流程：
+在宣布任何页面开发或重构完成前，业务侧 AI 必须逐项执行以下 **3 大准入门禁 (ADA Quality Gate)**：
 
-- [ ] **编译验证**：在终端运行 `swift build` 或在 Xcode 执行编译，确保处于 **0 错误、0 警告** 状态。
-- [ ] **String Catalog 验证**：若宿主工程有 `Localizable.xcstrings`，检查新增的静态文案是否已被 Xcode 正确索引，且没有误录入动态数据。
-- [ ] **设计系统红线核验**：
-  - 页面结构是否使用 `AuraScaffold` + `AuraSection` + `BaseCard`？
-  - 多行表单卡片是否显式设置了 `BaseCard(padding: 0)`？
-  - 同一卡片内多行标题首字是否对齐？分割线是否设置了 `.padding(.leading, 58)`？
-  - 卡片内已有图标时，`AuraSection` 是否去除了多余的 Header 图标？
-  - 右侧选择器是否保持单行排版？中文副标题是否没有单个孤字或词语劈开？
-  - 顶部完成按钮是否采用原生 `ToolbarItem`？
-  - 所有交互按钮是否应用了 `ScaleButtonStyle`？
-- [ ] **换肤测试**：切换 `.themePalette(.coral)` 或 `.themePalette(.indigo)`，确认整个页面的高光色与徽标均能平滑联动。
+### 门禁 1：视觉美学与设计系统 DNA (Aesthetics & Design DNA)
+- [ ] **三层黄金架构**：全屏使用 `AuraScaffold` + `AuraSection` + `BaseCard`，严禁随意手写原生 `ScrollView + VStack` 打底。
+- [ ] **80/20 黑白多巴胺法则**：界面维持 80% 黑白灰纯净骨架与连续曲率纯白浮岛卡片，20% 语义主题色点睛，杜绝彩虹杂乱与全屏单一蓝。
+- [ ] **零浮动白色药丸**：模态弹窗右上角关闭/完成按键 100% 采用原生 `ToolbarItem(placement: .confirmationAction / .cancellationAction)`。
+- [ ] **容器防膨胀**：卡片内部多行自带 20pt padding 时，外层 `BaseCard` 已显式声明 `padding: 0`。
+
+### 门禁 2：微排版与人机工程 (Micro-Typography & Ergonomics)
+- [ ] **58pt 严格物理对齐线**：同一卡片内所有列表行首字垂直对齐，Divider 统一配置为 `.padding(.leading, 58).opacity(0.35)`。
+- [ ] **单行精致右侧**：选择器内容、语义微标（`PillBadge`）与 `chevron` 严格收拢在单行 `HStack` 内，绝无折叠换行。
+- [ ] **微排版与零孤字**：中文副标题控制在 12~18 字内，零词语截断（无“停 / 顿”被劈开），零第二行单字孤行。
+- [ ] **数字防抖动**：所有动态指标数值、延时毫秒、时间戳均已挂载 `.monospacedDigit()`。
+- [ ] **WCAG 4.5:1+ 对比度**：正文使用 `textPrimary`，次级说明使用 `textSecondary`，严禁二次叠加 `.opacity()` 导致发灰发虚。
+- [ ] **底部呼吸留白**：滚动容器底部已显式设置 `24~32pt` 边距，优雅避让 iPhone Home Indicator。
+
+### 门禁 3：动效、触觉与工程健壮度 (Motion, Haptics & Engineering)
+- [ ] **物理微缩触感**：所有可点击卡片、按键均已挂载 `.buttonStyle(ScaleButtonStyle())` 与 `HapticManager`。
+- [ ] **活态数据感知**：关键状态使用生命力指标（如实时延时、备份时间戳）代替冷硬死说明。
+- [ ] **国际化双通道**：静态字面量直接传参（String Catalog 自动索引），动态数据走 `verbatim:` / `verbatimSubtitle:`。
+- [ ] **0 警告编译通过**：终端执行 `swift build`，保证 0 错误、0 警告编译。
+
