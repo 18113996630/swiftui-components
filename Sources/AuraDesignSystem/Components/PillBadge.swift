@@ -8,7 +8,8 @@ import SwiftUI
 /// ⚠️ 设计系统红线（Design Guardrails）：
 /// 1. 【严禁内置文案】：微标自身不包含任何预设业务文案，所有展示文本由业务方显式传入；
 /// 2. 【状态优先语义色】：状态表达应首选搭配 `IconBadge` 或对应语义色（如 amber 进行中 / sage 完成）；
-/// 3. 【无二次透明稀释】：文字在 subtle / solid / neutral 模式下严格对齐 WCAG 4.5:1 对比度标准。
+/// 3. 【无二次透明稀释】：文字在 subtle / solid / neutral 模式下严格对齐 WCAG 4.5:1 对比度标准；
+/// 4. 【轻量退让约束 (Subdued Footprint)】：微标文字采用 HIG Caption（12pt Semibold），配合 8x3 紧凑内边距，保证辅助元数据不抢夺正文与主标题权重。
 ///
 /// ```swift
 /// // 本地化字面量（Xcode 自动提取）
@@ -98,15 +99,15 @@ public struct PillBadge: View {
         HStack(spacing: DesignSystem.Spacing.tiny) {
             if let icon {
                 Image(systemName: icon)
-                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                    .font(.system(size: 10, weight: .semibold, design: .rounded))
             }
 
             title.makeText()
                 .font(DesignSystem.Typography.caption)
                 .fontWeight(.semibold)
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 4)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 3)
         .background(backgroundColor)
         .foregroundColor(foregroundColor)
         .clipShape(Capsule())

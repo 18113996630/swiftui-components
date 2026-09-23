@@ -8,7 +8,8 @@ import SwiftUI
 /// ⚠️ 设计系统红线（Design Guardrails）：
 /// 1. 【零内置文案】：分段器选项文案由调用方通过闭包生成，无内置文本；
 /// 2. 【去金属质感】：底板采用 `fillTertiary` 软底，禁用系统默认带反光的高光灰底；
-/// 3. 【弹簧几何匹配】：选中滑块使用 `.matchedGeometryEffect` 与 `Spring` 动效驱动。
+/// 3. 【弹簧几何匹配】：选中滑块使用 `.matchedGeometryEffect` 与 `Spring` 动效驱动；
+/// 4. 【字阶对齐 HIG 规范】：选项文字采用 `DesignSystem.Typography.footnote` (13pt Semibold/Medium)，杜绝大字撑爆分段滑块。
 ///
 /// ```swift
 /// // 1. 本地化映射（Xcode 自动提取）
@@ -76,11 +77,11 @@ public struct PillSegmentedPicker<Selection: Hashable>: View {
                     }
                 }) {
                     textForSelection(item).makeText()
-                        .font(DesignSystem.Typography.headline)
+                        .font(DesignSystem.Typography.footnote)
                         .fontWeight(isSelected ? .semibold : .medium)
                         .foregroundColor(isSelected ? .white : DesignSystem.Color.textSecondary)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 10)
+                        .padding(.vertical, 8)
                         .background(
                             ZStack {
                                 if isSelected {

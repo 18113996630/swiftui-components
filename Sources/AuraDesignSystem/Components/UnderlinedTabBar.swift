@@ -8,7 +8,8 @@ import SwiftUI
 /// ⚠️ 设计系统红线（Design Guardrails）：
 /// 1. 【零内置文案】：Tab 栏选项文案纯由调用方通过闭包提供；
 /// 2. 【下划线微动效】：指示器为 22x3pt 胶囊，切换时严格依赖 `.matchedGeometryEffect` 与轻触刻度手感；
-/// 3. 【无二次透明稀释】：选中态文字为 `textPrimary`，未选中态为 `textTertiary`，黑白骨架清晰。
+/// 3. 【无二次透明稀释】：选中态文字为 `textPrimary`，未选中态为 `textTertiary`，黑白骨架清晰；
+/// 4. 【字阶收敛】：Tab 选项采用 `DesignSystem.Typography.callout` (15pt)，顶栏排版紧凑不拥挤。
 ///
 /// ```swift
 /// // 1. 本地化映射（Xcode 自动提取）
@@ -82,7 +83,7 @@ public struct UnderlinedTabBar<T: Hashable>: View {
                 }) {
                     VStack(spacing: 8) {
                         textForTab(tab).makeText()
-                            .font(DesignSystem.Typography.headline)
+                            .font(DesignSystem.Typography.callout)
                             .fontWeight(isSelected ? .bold : .medium)
                             .foregroundColor(isSelected ? DesignSystem.Color.textPrimary : DesignSystem.Color.textTertiary)
 

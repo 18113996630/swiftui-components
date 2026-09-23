@@ -110,6 +110,7 @@ AuraScaffold (全屏外框，自动锁死 16pt 外边距与 24pt 段落流，打
 4. 【活态数据感知与严密微排版 (Living States & Micro-Typography)】：
    - 拒绝冷冰冰的静态死说明，优先注入生命力状态（如：`● 链路通畅 · 响应延时 42ms`、`上次备份：今天 14:20 · 空间充足`）。
    - 变动数值、百分比、时间戳、延时计数必须显式修饰 `.monospacedDigit()`，杜绝视线跳动抖动。
+   - **严格遵循 Apple HIG 11 级字阶阶梯，杜绝“万物皆 17pt Headline”**：双列卡片主标收敛至 `callout` (15pt Semibold)，分段器选项对齐 `footnote` (13pt)，状态徽标采用 `caption` (12pt Semibold)，极微型标记采用 `micro` (11pt Semibold)，彻底释放留白负空间，杜绝粗大字体撑爆紧凑容器。
    - 辅助微标与选择器必须严格维持**单行精致排版**；❌ 绝对禁止出现 `内置 AI (推荐) [推荐]` 的双重推荐套娃事故。
    - 中文副标题严格精炼（12~16 字），❌ 严禁双字词在中间被劈开换行（如“停 / 顿”），严禁末行留单字孤行。
 5. 【容器内边距防膨胀法则 (Zero Compounding Padding)】：
@@ -201,26 +202,46 @@ AI 在实现功能前，必须先查阅此表，匹配对应官方组件：
 | **输入行** | `ClearableTextFieldRow` | 沉浸式卡片输入框，带一键清空与快速剪贴板粘贴 | `ClearableTextFieldRow(title: "昵称", text: $name, placeholder: "请输入")` |
 | **密文输入行** | `ClearableSecureFieldRow` | 沉浸式卡片密文输入框，带一键清空、明密文显隐切换与粘贴 | `ClearableSecureFieldRow("密码", placeholder: "请输入密码", text: $pwd, allowReveal: true)` |
 | **行内操作** | `FormRowActionButton` | 表单行底部的居中主功能或危险操作按键 | `FormRowActionButton(title: "退出登录", role: .destructive) { ... }` |
-| **展示微标** | `PillBadge` | 语义微标（`.subtle` 柔光底、`.solid` 饱满、`.neutral` 灰度） | `PillBadge("PRO", style: .subtle, tintColor: .purple)` |
+| **展示微标** | `PillBadge` | 语义微标（`.subtle` 柔光底、`.solid` 饱满、`.neutral` 灰度，HIG 12pt 紧凑版） | `PillBadge("PRO", style: .subtle, tintColor: .purple)` |
 | **交互标签** | `PillButton` | 紧凑型胶囊按键，内置缩放微动效 | `PillButton("立即升级", icon: "sparkles") { ... }` |
 | **多选/单选** | `SelectableChip` | 胶囊芯片，选中时带弹性 Checkmark 展开动效 | `SelectableChip(title: "科技", isSelected: $selected)` |
 | **可删标签** | `DeletableChip` | 话题与关键词标签，带一键移除按键 | `DeletableChip(title: "SwiftUI") { ... }` |
-| **分段选择** | `PillSegmentedPicker` | 软底滑块分段器，支持泛型与动态映射 | `PillSegmentedPicker(selection: $tab, items: [0, 1]) { ... }` |
-| **下划导航** | `UnderlinedTabBar` | 极简纯文字下划线 Tab 栏 | `UnderlinedTabBar(selection: $tab, items: ["最新", "热门"]) { ... }` |
+| **分段选择** | `PillSegmentedPicker` | 软底滑块分段器，支持泛型与动态映射（HIG 13pt Footnote） | `PillSegmentedPicker(selection: $tab, items: [0, 1]) { ... }` |
+| **下划导航** | `UnderlinedTabBar` | 极简纯文字下划线 Tab 栏（HIG 15pt Callout） | `UnderlinedTabBar(selection: $tab, items: ["最新", "热门"]) { ... }` |
 | **数值滑杆** | `PrecisionSliderRow` | 等宽数字徽标实时滑杆，阻尼感良好 | `PrecisionSliderRow(title: "音量", value: $volume, range: 0...100)` |
 | **图标徽标** | `IconBadge` | 彩色超椭圆底座 + 白色 SF Symbol | `IconBadge(systemName: "star.fill", color: .yellow)` |
 | **图标拾取** | `SFSymbolGridPicker` | 原生 SF Symbols 图标网格选择器 | `SFSymbolGridPicker(selection: $icon)` |
 | **主题调色** | `PaletteColorPicker` | 9 种多巴胺主题色彩拾取面板 | `PaletteColorPicker(selection: $theme)` |
 | **空状态** | `EmptyStateView` | 标杆级空状态占位，支持图标、标题、副标题与主按键 | `EmptyStateView(icon: "tray", title: "暂无数据", subtitle: "下拉刷新试试")` |
-| **通栏通知** | `NoticeBanner` | 嵌入式信息/警告/错误通知条 | `NoticeBanner(style: .info, "数据已同步最新")` |
+| **通栏通知** | `NoticeBanner` | 嵌入式信息/警告/错误通知条（HIG 14pt Subheadline） | `NoticeBanner(style: .info, "数据已同步最新")` |
 | **打字机卡片** | `TypewriterStreamingCard` | AI 文本流式打印卡片，带纯图标呼吸状态与停止键 | `TypewriterStreamingCard(text: streamText, isStreaming: true)` |
-| **时间线行** | `TimelineTaskRow` | 38pt 饱满节点时间线项与空闲时段连接线 | `TimelineTaskRow(time: "10:00", title: "会议", isCompleted: $done)` |
+| **时间线行** | `TimelineTaskRow` | 38pt 饱满节点时间线项与空闲时段连接线（HIG timelineTime + 14pt Subheadline） | `TimelineTaskRow(time: "10:00", title: "会议", isCompleted: $done)` |
 | **待办清单** | `ChecklistRow` | 待办复选框列表行，带完成划线与渐隐动效 | `ChecklistRow(title: "完成文档编写", isCompleted: $done)` |
 | **模态表单** | `HeroBannerSheet` | 顶部沉浸式色彩渐变卡片模态弹窗 | `HeroBannerSheet(title: "升级提示", icon: "crown.fill") { ... }` |
-| **快捷入口** | `QuickActionCard` | 仪表盘/首页双列快捷入口卡片，支持多语言自适应等高与防断行 | `QuickActionCard(icon: "lightbulb.fill", title: "灵感写稿", subtitle: "AI 智能生成") { ... }` |
-| **悬浮轻提示** | `ToastHUD` / 修饰符 | 居中毛玻璃微提示气泡，支持 Bool 及可选值驱动 | `.toastHUD(message: $toastMsg) / .toastHUD(isPresented: $show, "已保存")` |
+| **快捷入口** | `QuickActionCard` | 仪表盘/首页双列快捷入口卡片（HIG 15pt Callout，多语言等高自适应与防挤压） | `QuickActionCard(icon: "lightbulb.fill", title: "灵感写稿", subtitle: "AI 智能生成") { ... }` |
+| **悬浮轻提示** | `ToastHUD` / 修饰符 | 居中毛玻璃微提示气泡（HIG 15pt Callout，支持 Bool 及可选值驱动） | `.toastHUD(message: $toastMsg) / .toastHUD(isPresented: $show, "已保存")` |
 | **流式布局** | `FlowLayout` | 自动折行标签云布局协议 | `FlowLayout(spacing: 8) { ForEach(...) { ... } }` |
-| **媒体缩略图** | `MediaThumbnailCard` | 音视频录像与素材卡片，带高对比时长胶囊（monospacedDigit）、播放微标与物理缩放 | `MediaThumbnailCard(duration: "01:24", title: "提词录像 01", subtitle: "今天 14:20") { play() }` |
+| **媒体缩略图** | `MediaThumbnailCard` | 音视频录像与素材卡片，带高对比时长胶囊（HIG micro monospacedDigit）、播放微标与物理缩放 | `MediaThumbnailCard(duration: "01:24", title: "提词录像 01", subtitle: "今天 14:20") { play() }` |
+
+### 权威排版字阶速查 (Apple HIG Typography Standards)
+
+组件库严格对齐 Apple HIG Dynamic Type 11 级字阶标准，各级角色与规范尺寸严格锁定：
+
+| 字阶 Token | 尺寸与权重 (SF Pro Rounded) | 对应 HIG 级别 | 最佳实践与典型消费场景 |
+| :--- | :--- | :--- | :--- |
+| **`largeTitle`** | 28pt · Bold | Large Title / Title 1 强调级 | 页面一级主标题、滚动首屏主标 |
+| **`title`** | 22pt · Bold | Title 2 | 弹窗与核心大模块标题 |
+| **`title3`** | 20pt · Semibold | Title 3 | 次级重要模块标、Sheet 顶部主标 |
+| **`headline`** | 17pt · Semibold | Headline | 章节段落大标（`AuraSection`）、全宽列表卡片主标 |
+| **`body`** | 16pt · Regular | Body | 长文本正文、输入框主要文本（保持适读性呼吸感） |
+| **`callout`** | 15pt · Semibold | Callout (Emphasized) | **双列卡片主标**（`QuickActionCard`）、通用按键、Toast |
+| **`calloutRegular`** | 15pt · Regular | Callout | 搜索栏占位文字、次级过渡段落 |
+| **`subheadline`** | 14pt · Medium | Subhead | 卡片摘录、列表副标题、辅助解释说明 |
+| **`footnote`** | 13pt · Medium | Footnote | **分段器选项**（`PillSegmentedPicker`）、时间跨度说明 |
+| **`caption`** | 12pt · Medium | Caption 1 | **状态微标**（`PillBadge`）、标签微标、次级辅助属性 |
+| **`micro`** | 11pt · Semibold | Caption 2 | **极微型角标**、图片时长胶囊、点状状态计数 |
+| **`time`** | 12pt · Semibold | Caption 1 (Digits) | 规整微标中的时长、字数等数字指标 |
+| **`timelineTime`** | 13pt · Semibold | Footnote (Digits) | 时间线左侧大节点刻度时间 |
 
 ---
 

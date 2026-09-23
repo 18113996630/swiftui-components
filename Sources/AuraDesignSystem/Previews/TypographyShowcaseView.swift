@@ -120,21 +120,31 @@ public struct TypographyShowcaseView: View {
     // MARK: - 03 官方字级阶梯
     private var typeScaleSection: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
-            sectionHeader(title: "规范字级阶梯 (Type Scale)", icon: "textformat.size")
+            sectionHeader(title: "规范字级阶梯 (Type Scale · Apple HIG 对齐)", icon: "textformat.size")
 
             BaseCard {
                 VStack(spacing: 12) {
                     typeRow(label: "Large Title", spec: "28pt · Bold", font: DesignSystem.Typography.largeTitle, sample: "Aura 标题")
                     Divider().opacity(0.4)
-                    typeRow(label: "Title", spec: "20pt · Bold", font: DesignSystem.Typography.title, sample: "卡片与模块主标")
+                    typeRow(label: "Title 2", spec: "22pt · Bold", font: DesignSystem.Typography.title, sample: "核心模块与弹窗主标")
+                    Divider().opacity(0.4)
+                    typeRow(label: "Title 3", spec: "20pt · Semibold", font: DesignSystem.Typography.title3, sample: "次级重要卡片与顶栏")
                     Divider().opacity(0.4)
                     typeRow(label: "Headline", spec: "17pt · Semibold", font: DesignSystem.Typography.headline, sample: "章节导航与强调首行")
                     Divider().opacity(0.4)
                     typeRow(label: "Body", spec: "16pt · Regular", font: DesignSystem.Typography.body, sample: "正文阅读呼吸感与适读性")
                     Divider().opacity(0.4)
+                    typeRow(label: "Callout", spec: "15pt · Semibold", font: DesignSystem.Typography.callout, sample: "双列卡片主标 · 紧凑交互按键")
+                    Divider().opacity(0.4)
                     typeRow(label: "Subheadline", spec: "14pt · Medium", font: DesignSystem.Typography.subheadline, sample: "辅助说明与列表副标")
                     Divider().opacity(0.4)
-                    typeRow(label: "Caption / Time", spec: "13pt · Medium/Semibold", font: DesignSystem.Typography.caption, sample: "09:00 - 10:00 · 标签微标")
+                    typeRow(label: "Footnote", spec: "13pt · Medium", font: DesignSystem.Typography.footnote, sample: "分段器选项 · 辅助注脚")
+                    Divider().opacity(0.4)
+                    typeRow(label: "Caption", spec: "12pt · Medium", font: DesignSystem.Typography.caption, sample: "标签微标 · 辅助元数据")
+                    Divider().opacity(0.4)
+                    typeRow(label: "Micro", spec: "11pt · Semibold", font: DesignSystem.Typography.micro, sample: "极微型角标 · 状态计数器")
+                    Divider().opacity(0.4)
+                    typeRow(label: "Time", spec: "12pt · Semibold", font: DesignSystem.Typography.time, sample: "~01:33 · 391字 · 规整数字")
                 }
             }
         }

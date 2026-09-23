@@ -8,7 +8,8 @@ import SwiftUI
 /// ⚠️ 设计系统红线（Design Guardrails）：
 /// 1. 【零内置文案】：操作按键文案必须由业务方传入，严禁组件内部写死；
 /// 2. 【破坏性操作警示】：`role: .destructive` 强制绑定红色视觉警示与 `HapticManager.notification(.warning)` 强反馈；
-/// 3. 【表单全宽对齐】：内部采用 `.frame(maxWidth: .infinity)` 居中对齐，置于 `BaseCard` 底部形成收拢视觉。
+/// 3. 【表单全宽对齐】：内部采用 `.frame(maxWidth: .infinity)` 居中对齐，置于 `BaseCard` 底部形成收拢视觉；
+/// 4. 【字阶对齐 HIG Callout】：采用 `DesignSystem.Typography.callout` (15pt Semibold)，兼顾清晰识别度与紧凑度。
 ///
 /// ```swift
 /// // 1. 本地化字面量（Xcode 自动抓取）
@@ -95,7 +96,7 @@ public struct FormRowActionButton: View {
                 }
 
                 title.makeText()
-                    .font(DesignSystem.Typography.headline)
+                    .font(DesignSystem.Typography.callout)
                     .fontWeight(.semibold)
             }
             .foregroundColor(activeColor)

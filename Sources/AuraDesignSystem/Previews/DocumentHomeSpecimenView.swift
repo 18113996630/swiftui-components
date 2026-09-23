@@ -163,7 +163,7 @@ public struct DocumentHomeSpecimenView: View {
 
                     // 2. 页面大标题
                     Text(pageTitle)
-                        .font(.system(size: 32, weight: .bold, design: .rounded))
+                        .font(DesignSystem.Typography.largeTitle)
                         .foregroundColor(DesignSystem.Color.textPrimary)
                         .padding(.horizontal, DesignSystem.Layout.pagePadding)
 
@@ -256,7 +256,7 @@ public struct DocumentHomeSpecimenView: View {
 
             TextField(searchPrompt, text: $searchText)
                 .textFieldStyle(.plain)
-                .font(DesignSystem.Typography.body)
+                .font(DesignSystem.Typography.calloutRegular)
                 .foregroundColor(DesignSystem.Color.textPrimary)
 
             if !searchText.isEmpty {
@@ -336,7 +336,7 @@ public struct DocumentHomeSpecimenView: View {
                     Text(docExcerpt)
                         .font(DesignSystem.Typography.subheadline)
                         .foregroundColor(DesignSystem.Color.textSecondary)
-                        .lineSpacing(3)
+                        .lineSpacing(3.5)
                         .lineLimit(2)
 
                     // 底部规整元数据行：规范微标 + 时间沉淀
@@ -403,7 +403,8 @@ public struct DocumentHomeSpecimenView: View {
                     .font(.system(size: 15, weight: isSelected ? .semibold : .medium))
 
                 Text(title)
-                    .font(.system(size: 13, weight: isSelected ? .semibold : .medium, design: .rounded))
+                    .font(DesignSystem.Typography.footnote)
+                    .fontWeight(isSelected ? .semibold : .medium)
             }
             .padding(.horizontal, 18)
             .padding(.vertical, 10)

@@ -4,7 +4,7 @@
 
 ## 设计系统核心规范 (Design DNA)
 
-1. **全域 SF Pro Rounded 排版与 WCAG 4.5:1 对比度基准**：温暖、圆润且高辨识度，涵盖 `largeTitle` (28pt)、`title` (20pt)、`headline` (17pt Semibold 骨架)、`body` (16pt Regular)、`subheadline` (14pt Medium)、`caption` 与 `time` (13pt Semibold)，严禁二次透明度稀释，告别发灰发虚。
+1. **全域 SF Pro Rounded 排版与 WCAG 4.5:1 对比度基准**：严格对齐 Apple HIG 11 级字阶阶梯，涵盖 `largeTitle` (28pt)、`title` (22pt)、`title3` (20pt)、`headline` (17pt Semibold 骨架)、`body` (16pt Regular)、`callout` (15pt Semibold/Regular 紧凑主标)、`subheadline` (14pt Medium)、`footnote` (13pt Medium)、`caption` (12pt Medium)、`micro` (11pt Semibold 极微型角标) 与 `time` (12pt Semibold)，严禁二次透明度稀释，拉开层次，消除大字压迫感。
 2. **连续曲率超椭圆 (Continuous Curvature)**：全系采用 `.continuous`，梯度覆盖 8pt (微标) / 14pt (按钮) / 20pt (卡片) / 28pt (浮岛主画布)。
 3. **9 色多巴胺活力主题色盘**：`ThemePalette` 贯穿，通过 `@Environment(\.themePalette)` 全局穿透与即时换肤。
 4. **漫反射环境光阴影与细微边缘**：统一 `24pt / 32pt` 柔和扩散阴影（Aura Ambient Shadow）与 `0.5pt hairlineBorder` 边缘高光。

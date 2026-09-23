@@ -8,7 +8,8 @@ import SwiftUI
 /// ⚠️ 设计系统红线（Design Guardrails）：
 /// 1. 【零内置文案】：提示信息与按键文案必须由外部注入，组件内部不写死任何文案；
 /// 2. 【语义状态对齐】：严格按 info / warning / error / neutral 四种规范分流，匹配对应强调色与标准图标；
-/// 3. 【无二次透明稀释】：正文严格采用 `textPrimary`，在浅色软底上满足 WCAG 4.5:1 对比度。
+/// 3. 【无二次透明稀释】：正文严格采用 `textPrimary`，在浅色软底上满足 WCAG 4.5:1 对比度；
+/// 4. 【字阶对齐 HIG 通栏】：信息文案采用 `DesignSystem.Typography.subheadline` (14pt Medium)，按键采用 `caption` (12pt Bold)，避免通栏大字压迫感。
 ///
 /// ```swift
 /// // 1. 本地化字面量（Xcode 自动提取）
@@ -111,11 +112,11 @@ public struct NoticeBanner: View {
     public var body: some View {
         HStack(alignment: .center, spacing: DesignSystem.Spacing.medium) {
             Image(systemName: icon ?? style.defaultIcon)
-                .font(.system(size: 18, weight: .semibold, design: .rounded))
+                .font(.system(size: 16, weight: .semibold, design: .rounded))
                 .foregroundColor(accentColor)
 
             message.makeText()
-                .font(DesignSystem.Typography.body)
+                .font(DesignSystem.Typography.subheadline)
                 .foregroundColor(DesignSystem.Color.textPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -137,7 +138,7 @@ public struct NoticeBanner: View {
             }
         }
         .padding(.horizontal, DesignSystem.Layout.cardPadding)
-        .padding(.vertical, DesignSystem.Spacing.large)
+        .padding(.vertical, DesignSystem.Spacing.medium)
         .background(accentColor.opacity(0.1))
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.card, style: .continuous))
         .overlay(

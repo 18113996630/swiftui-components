@@ -136,18 +136,30 @@ public enum DesignSystem {
     public enum Typography {
         /// 页面主标题（对应 HIG Large Title / Title 1 强调级：28pt Bold）
         public static let largeTitle = Font.system(size: 28, weight: .bold, design: .rounded)
-        /// 模块与弹窗标题（对应 HIG Title 2/3：20pt Bold）
-        public static let title = Font.system(size: 20, weight: .bold, design: .rounded)
-        /// 分组段落名、卡片首行、强调重点（对应 HIG Headline：17pt Semibold）
+        /// 核心大模块与弹窗标题（对应 HIG Title 2：22pt Bold）
+        public static let title = Font.system(size: 22, weight: .bold, design: .rounded)
+        /// 次级重要模块与Sheet顶栏主标（对应 HIG Title 3：20pt Semibold）
+        public static let title3 = Font.system(size: 20, weight: .semibold, design: .rounded)
+        /// 分组段落名（AuraSection）、全宽卡片主标、强调首行（对应 HIG Headline：17pt Semibold）
         public static let headline = Font.system(size: 17, weight: .semibold, design: .rounded)
-        /// 正文内容、表单正文（对应 HIG Body：16pt Regular，提升可读性与呼吸感）
+        /// 正文内容、表单主要文本（对应 HIG Body：16pt Regular，维持舒适适读性）
         public static let body = Font.system(size: 16, weight: .regular, design: .rounded)
-        /// 次级副标题、辅助列表项（对应 HIG Subhead：14pt Medium）
+        /// 紧凑卡片主标、交互按钮、Toast提示（对应 HIG Callout：15pt Semibold）
+        public static let callout = Font.system(size: 15, weight: .semibold, design: .rounded)
+        /// 搜索框提示词、轻量次级过渡正文（对应 HIG Callout Regular：15pt Regular）
+        public static let calloutRegular = Font.system(size: 15, weight: .regular, design: .rounded)
+        /// 次级副标题、卡片摘要引文、列表副标（对应 HIG Subhead：14pt Medium）
         public static let subheadline = Font.system(size: 14, weight: .medium, design: .rounded)
-        /// 脚注、提示信息、标签微标（对应 HIG Footnote / Caption：13pt Medium）
-        public static let caption = Font.system(size: 13, weight: .medium, design: .rounded)
-        /// 时间范围与数字专用（13pt Semibold Rounded，确保时间节点与数字清晰不发虚）
-        public static let time = Font.system(size: 13, weight: .semibold, design: .rounded)
+        /// 辅助注脚、分段器选项、时间跨度范围（对应 HIG Footnote：13pt Medium）
+        public static let footnote = Font.system(size: 13, weight: .medium, design: .rounded)
+        /// 标签微标、状态微标、次级辅助文本（对应 HIG Caption 1：12pt Medium）
+        public static let caption = Font.system(size: 12, weight: .medium, design: .rounded)
+        /// 极微型角标、点状状态、图片角标（对应 HIG Caption 2：11pt Semibold）
+        public static let micro = Font.system(size: 11, weight: .semibold, design: .rounded)
+        /// 规整微标中的时间、字数专用数字字阶（12pt Semibold Rounded）
+        public static let time = Font.system(size: 12, weight: .semibold, design: .rounded)
+        /// 时间线大节点主刻度专用字阶（13pt Semibold Rounded）
+        public static let timelineTime = Font.system(size: 13, weight: .semibold, design: .rounded)
     }
 
     public enum Spacing {

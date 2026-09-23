@@ -146,7 +146,7 @@ public struct MediaThumbnailCard<ThumbnailContent: View>: View {
                     // 右下角高对比度时长微标
                     if let duration, !duration.isEmpty {
                         Text(duration)
-                            .font(.system(size: 11, weight: .semibold, design: .rounded))
+                            .font(DesignSystem.Typography.micro)
                             .monospacedDigit()
                             .foregroundColor(.white)
                             .padding(.horizontal, 6)

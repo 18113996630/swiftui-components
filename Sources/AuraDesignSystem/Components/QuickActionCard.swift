@@ -7,10 +7,11 @@ import SwiftUI
 /// 全面支持 Xcode 15+ String Catalog (`.xcstrings`) 自动静态提取与 `verbatim:` 动态非本地化直出。
 ///
 /// ⚠️ 设计系统红线（Design Guardrails）：
-/// 1. 【国际化多语言自适应 (i18n Elasticity)】：考虑到德语、俄语、英语等长字符语言，副标题支持自适应弹性折行（最多 2 行），配备 `minimumScaleFactor(0.85)`，且卡片强制 `maxHeight: .infinity` 实现等高对齐，杜绝左右卡片高低不平与截断丢意；
-/// 2. 【顶部顶格对齐 (Top-Pinned Anchor)】：容器采用 `HStack(alignment: .top)`，确保多语言长文案在多行排版时，左侧图标始终稳健锚定在顶部，杜绝居中飘移；
-/// 3. 【高对比度与防发虚】：主标题使用 `DesignSystem.Color.textPrimary`，副标题使用 `DesignSystem.Color.textSecondary`，严禁二次叠加 opacity；
-/// 4. 【触控人机工程】：默认内置 `ScaleButtonStyle` 物理弹性微缩（0.97）与 `HapticManager.impact(.light)` 触觉反馈，触控热区保证 >= 44x44pt。
+/// 1. 【双列紧凑空间契合 (Spatial Harmony)】：主标题对齐 HIG Callout（15pt Semibold），副标题采用 HIG Caption（12pt Medium），释放 20%+ 负空间呼吸感，杜绝 17pt 大标挤爆并排卡片；
+/// 2. 【国际化多语言自适应 (i18n Elasticity)】：考虑到德语、俄语、英语等长字符语言，副标题支持自适应弹性折行（最多 2 行），配备 `minimumScaleFactor(0.82)`，且卡片强制 `maxHeight: .infinity` 实现等高对齐，杜绝左右卡片高低不平与截断丢意；
+/// 3. 【顶部顶格对齐 (Top-Pinned Anchor)】：容器采用 `HStack(alignment: .top)`，确保多语言长文案在多行排版时，左侧图标始终稳健锚定在顶部，杜绝居中飘移；
+/// 4. 【高对比度与防发虚】：主标题使用 `DesignSystem.Color.textPrimary`，副标题使用 `DesignSystem.Color.textSecondary`，严禁二次叠加 opacity；
+/// 5. 【触控人机工程】：默认内置 `ScaleButtonStyle` 物理弹性微缩（0.97）与 `HapticManager.impact(.light)` 触觉反馈，触控热区保证 >= 44x44pt。
 ///
 /// ```swift
 /// QuickActionCard(
@@ -107,7 +108,7 @@ public struct QuickActionCard: View {
                 // 右侧文本流 (支持多语言弹性伸缩与自动等高)
                 VStack(alignment: .leading, spacing: 3) {
                     title.makeText()
-                        .font(DesignSystem.Typography.headline)
+                        .font(DesignSystem.Typography.callout)
                         .foregroundColor(DesignSystem.Color.textPrimary)
                         .lineLimit(1)
                         .minimumScaleFactor(0.75)

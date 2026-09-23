@@ -6,10 +6,11 @@ import SwiftUI
 /// 全面支持 Xcode 15+ String Catalog (`.xcstrings`) 自动静态提取与 `verbatim:` 动态非本地化直出。
 ///
 /// ⚠️ 设计系统红线（Design Guardrails）：
-/// 1. 【时间排版】：时间刻度统一采用 `DesignSystem.Typography.time` (13pt Semibold Rounded)，确保数字清脆笃定；
-/// 2. 【多巴胺节点】：节点圆形背景强制采用饱满实心渐变或主色，配纯白图标，杜绝低饱和透明度混色发脏；
-/// 3. 【正向完成反馈】：打卡按钮完成态采用温和正向绿 + 触觉震动反馈，未完成态采用柔和中性轮廓；
-/// 4. 【零内置文案】：节点标题、副标题、标签与空闲时段提示纯由外部传入。
+/// 1. 【时间排版】：时间刻度统一采用 `DesignSystem.Typography.timelineTime` (13pt Semibold Rounded)，确保大刻度数字清脆笃定；
+/// 2. 【主副梯度清晰】：主标题为 `headline` (17pt Semibold)，辅助副标题严格采用 `subheadline` (14pt Medium)，杜绝副标题过大喧宾夺主；
+/// 3. 【多巴胺节点】：节点圆形背景强制采用饱满实心渐变或主色，配纯白图标，杜绝低饱和透明度混色发脏；
+/// 4. 【正向完成反馈】：打卡按钮完成态采用温和正向绿 + 触觉震动反馈，未完成态采用柔和中性轮廓；
+/// 5. 【零内置文案】：节点标题、副标题、标签与空闲时段提示纯由外部传入。
 ///
 /// ```swift
 /// // 1. 本地化字面量（Xcode 自动提取）
@@ -128,7 +129,7 @@ public struct TimelineTaskRow: View {
         HStack(alignment: .top, spacing: DesignSystem.Spacing.medium) {
             // 左侧时间标签
             Text(time)
-                .font(DesignSystem.Typography.time)
+                .font(DesignSystem.Typography.timelineTime)
                 .foregroundColor(DesignSystem.Color.textTertiary)
                 .frame(width: 44, alignment: .trailing)
                 .padding(.top, 9)
@@ -170,7 +171,7 @@ public struct TimelineTaskRow: View {
 
                 if let subtitle {
                     subtitle.makeText()
-                        .font(DesignSystem.Typography.body)
+                        .font(DesignSystem.Typography.subheadline)
                         .foregroundColor(DesignSystem.Color.textSecondary)
                 }
 

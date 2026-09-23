@@ -8,7 +8,8 @@ import SwiftUI
 /// ⚠️ 设计系统红线（Design Guardrails）：
 /// 1. 【零内置文案】：提示信息纯由调用方传入，无内置文案；
 /// 2. 【触觉反馈连贯】：浮出时自动触发 `HapticManager.notification(.success)`；
-/// 3. 【无二次透明稀释】：胶囊文本使用标准 `textPrimary`，在毛玻璃材质上保持高对比度。
+/// 3. 【无二次透明稀释】：胶囊文本使用标准 `textPrimary`，在毛玻璃材质上保持高对比度；
+/// 4. 【轻巧胶囊字阶】：采用 HIG Callout (15pt Semibold) 与 15pt 图标，配合 16x10 紧凑内边距，打造对标 iOS 原生灵动岛般的精致悬浮质感。
 ///
 /// ```swift
 /// // 1. 本地化字面量（Xcode 自动提取，Bool 驱动）
@@ -66,15 +67,15 @@ public struct ToastHUD: View {
     public var body: some View {
         HStack(spacing: DesignSystem.Spacing.small) {
             Image(systemName: icon)
-                .font(.system(size: 16, weight: .bold, design: .rounded))
+                .font(.system(size: 14, weight: .bold, design: .rounded))
                 .foregroundColor(effectiveIconColor)
 
             message.makeText()
-                .font(DesignSystem.Typography.headline)
+                .font(DesignSystem.Typography.callout)
                 .foregroundColor(DesignSystem.Color.textPrimary)
         }
-        .padding(.horizontal, 18)
-        .padding(.vertical, 12)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
         .background(.ultraThinMaterial, in: Capsule())
         .overlay(
             Capsule()
