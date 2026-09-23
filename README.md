@@ -59,7 +59,8 @@ Sources/AuraDesignSystem/
 │   ├── QuickActionCard.swift       # 仪表盘与首页双列快捷入口卡片 (多语言自适应等高与防断行)
 │   ├── TimelineTaskRow.swift       # 38pt 饱满时间线节点与虚线空闲时段
 │   ├── ChecklistRow.swift          # 子任务与待办清单行
-│   └── HeroBannerSheet.swift       # 沉浸式彩色顶栏模态卡片
+│   ├── HeroBannerSheet.swift       # 沉浸式彩色顶栏模态卡片
+│   └── MediaThumbnailCard.swift    # 标杆级通用媒体缩略图卡片 (高对比时长胶囊、播放微标与物理缩放)
 └── Previews/
     ├── DesignSystemGalleryView.swift # 全景交互式组件展厅 (包含全量组件与即时换肤)
     ├── DocumentHomeSpecimenView.swift # 文稿管理首页与 iOS 26 原生导航重构展厅 (多语言长文案抗压)

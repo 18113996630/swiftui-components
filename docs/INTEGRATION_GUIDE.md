@@ -220,6 +220,7 @@ AI 在实现功能前，必须先查阅此表，匹配对应官方组件：
 | **快捷入口** | `QuickActionCard` | 仪表盘/首页双列快捷入口卡片，支持多语言自适应等高与防断行 | `QuickActionCard(icon: "lightbulb.fill", title: "灵感写稿", subtitle: "AI 智能生成") { ... }` |
 | **悬浮轻提示** | `ToastHUD` / 修饰符 | 居中毛玻璃微提示气泡，支持 Bool 及可选值驱动 | `.toastHUD(message: $toastMsg) / .toastHUD(isPresented: $show, "已保存")` |
 | **流式布局** | `FlowLayout` | 自动折行标签云布局协议 | `FlowLayout(spacing: 8) { ForEach(...) { ... } }` |
+| **媒体缩略图** | `MediaThumbnailCard` | 音视频录像与素材卡片，带高对比时长胶囊（monospacedDigit）、播放微标与物理缩放 | `MediaThumbnailCard(duration: "01:24", title: "提词录像 01", subtitle: "今天 14:20") { play() }` |
 
 ---
 

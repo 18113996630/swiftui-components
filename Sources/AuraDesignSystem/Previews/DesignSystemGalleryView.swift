@@ -59,6 +59,7 @@ public struct DesignSystemGalleryView: View {
                 heroBannerDemoSection
                 timelineSection
                 quickActionCardSection
+                mediaThumbnailCardSection
                 segmentedAndControlsSection
                 flowLayoutAndChipsSection
                 navigationAndPagingSection
@@ -261,6 +262,69 @@ public struct DesignSystemGalleryView: View {
                 }
             }
             .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    // MARK: - 05.1 媒体与视频缩略图流 (MediaThumbnailCard)
+    private var mediaThumbnailCardSection: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
+            sectionTitle("05.1 媒体与视频缩略图流 (MediaThumbnailCard)")
+
+            BaseCard {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
+                    HStack {
+                        Label("关联录制视频", systemImage: "video.badge.waveform")
+                            .font(DesignSystem.Typography.headline)
+                            .foregroundColor(DesignSystem.Color.textPrimary)
+
+                        Spacer()
+
+                        PillBadge(verbatim: "2 条录像", style: .subtle(currentTheme.color))
+                    }
+
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: DesignSystem.Spacing.medium) {
+                            MediaThumbnailCard(
+                                verbatimTitle: "提词完整录制 (主镜头)",
+                                verbatimSubtitle: "今天 14:20 · 4K 60fps",
+                                duration: "01:24",
+                                verbatimBadge: "精选",
+                                badgeColor: ThemePalette.coral.color
+                            ) {
+                                showToast = true
+                            }
+
+                            MediaThumbnailCard(
+                                verbatimTitle: "中景近景重录",
+                                verbatimSubtitle: "昨天 19:40 · 1080P",
+                                duration: "00:48"
+                            ) {
+                                showToast = true
+                            }
+
+                            MediaThumbnailCard(
+                                verbatimTitle: "小红书高清长图",
+                                verbatimSubtitle: "已排版完成",
+                                duration: "长图",
+                                showPlayButton: false
+                            ) {
+                                LinearGradient(
+                                    colors: [currentTheme.color.opacity(0.8), currentTheme.color.opacity(0.4)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                                .overlay(
+                                    Image(systemName: "photo.on.rectangle.angled")
+                                        .font(.title2)
+                                        .foregroundColor(.white.opacity(0.9))
+                                )
+                            } action: {
+                                showToast = true
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
